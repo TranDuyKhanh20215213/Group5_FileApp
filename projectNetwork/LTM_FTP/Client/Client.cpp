@@ -17,7 +17,9 @@ int main(int argc, char* argv[]) {
 	//Step 3: Specify server address
 	char* server = (char*)malloc(sizeof(char) * 10);
 	char* port = (char*)malloc(sizeof(char) * 10);
-	strcpy(server, "127.0.0.1");
+	cout<<"Input IP address: ";
+	cin >> server;
+	// strcpy(server, "127.0.0.1");
 	cout << "Input port: ";
 	cin >> port;
 	cout << server << " " << port <<endl;
@@ -52,28 +54,6 @@ int main(int argc, char* argv[]) {
 	printf("Status %d\n", status);
 
 	//Step 5: Communicate with server
-	//MENU
-	
-
-	
-	// int scene = 1;
-	// // Account acc;
-	// // Group gr;
-	// do {
-	// 	if (scene == 1) {
-	// 		scene = optionFirstFrame(client, acc, argc, argv);
-	// 		system("pause");
-	// 	}
-	// 	if (scene == 2) {
-	// 		scene = optionSecondFrame(client, acc, gr);
-	// 		system("pause");
-	// 	}
-	// 	if (scene == 3) {
-	// 		scene = optionThirdFrame(client, acc, gr);
-	// 		system("pause");
-	// 	}
-	// } while (scene != 4);
-	/*-------------------------------------------------------------*/
 	printf("Closed connection.\n");
 	logout(client, acc.id);
 	//Step 6: Close socket
