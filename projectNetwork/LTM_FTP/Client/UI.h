@@ -408,20 +408,20 @@ void main_page(GtkWidget *button, Window *win)
 	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button_1, "clicked", G_CALLBACK(create_group), win1);
 
-	// button_1 = gtk_button_new_with_label("\t\t\t\nEnter Group\n\n");
-	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
-	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+	button_1 = gtk_button_new_with_label("\t\t\t\nEnter Group\n\n");
+	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
 
-	// button_1 = gtk_button_new_with_label("\t\t\t\nJoin Group\n\n");
-	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 5, 1, 1);
-	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_1, "clicked", G_CALLBACK(join_group), win1);
+	button_1 = gtk_button_new_with_label("\t\t\t\nJoin Group\n\n");
+	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(join_group), win1);
 
-	// button_1 = gtk_button_new_with_label("\t\t\t\nLeave Group\n\n");
-	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 5, 1, 1);
-	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_1, "clicked", G_CALLBACK(leave_group), win1);
+	button_1 = gtk_button_new_with_label("\t\t\t\nLeave Group\n\n");
+	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(leave_group), win1);
 
 	button_1 = gtk_button_new_with_label("\t\t\t\nLog out\n\n");
 	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 6, 5, 1, 1);
