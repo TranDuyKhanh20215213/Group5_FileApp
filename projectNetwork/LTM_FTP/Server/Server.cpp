@@ -42,8 +42,10 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	GetSystemInfo(&systemInfo);
+	// get systemInfo
 
+	GetSystemInfo(&systemInfo);
+	// create multiple threads (twice as many as the number of processors) handle server tasks in parallel
 	for (int i = 0; i < (int)systemInfo.dwNumberOfProcessors * 2; i++)
 	{
 		if (_beginthreadex(0, 0, serverWorkerThread, (void *)completionPort, 0, 0) == 0)
