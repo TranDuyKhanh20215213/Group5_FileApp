@@ -4,3 +4,4 @@ MEM03 dang dang 1
 MEM04 lam lam 1
 MEM05 network netwol 1
 MEM06 khanh khanh 1
+MEM07 admin2 admin2 1

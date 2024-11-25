@@ -408,20 +408,20 @@ void main_page(GtkWidget *button, Window *win)
 	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button_1, "clicked", G_CALLBACK(create_group), win1);
 
-	// button_1 = gtk_button_new_with_label("\t\t\t\nEnter Group\n\n");
-	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
-	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+	button_1 = gtk_button_new_with_label("\t\t\t\nEnter Group\n\n");
+	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
 
-	// button_1 = gtk_button_new_with_label("\t\t\t\nJoin Group\n\n");
-	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 5, 1, 1);
-	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_1, "clicked", G_CALLBACK(join_group), win1);
+	button_1 = gtk_button_new_with_label("\t\t\t\nJoin Group\n\n");
+	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(join_group), win1);
 
-	// button_1 = gtk_button_new_with_label("\t\t\t\nLeave Group\n\n");
-	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 5, 1, 1);
-	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_1, "clicked", G_CALLBACK(leave_group), win1);
+	button_1 = gtk_button_new_with_label("\t\t\t\nLeave Group\n\n");
+	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(leave_group), win1);
 
 	button_1 = gtk_button_new_with_label("\t\t\t\nLog out\n\n");
 	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 6, 5, 1, 1);
@@ -939,7 +939,7 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_file), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nList Member\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 5, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_member), win1);
 
@@ -964,7 +964,7 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow request\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 6, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 5, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
@@ -974,7 +974,7 @@ void in_group_page(GtkWidget *button, Window *win)
 		// // g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 6, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 5, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -991,7 +991,7 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect(button_1, "clicked", G_CALLBACK(download_file), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nList Member\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 5, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 5, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_member), win1);
 
@@ -1016,7 +1016,7 @@ void in_group_page(GtkWidget *button, Window *win)
 		// // g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 6, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 5, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -1372,7 +1372,7 @@ void create_folder(GtkWidget *button, Window *win)
 	// label
 	label = gtk_label_new("Create Folder!");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
-	label_1 = gtk_label_new("\nFoler Name:    ");
+	label_1 = gtk_label_new("\nFolder Name:    ");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
 
 	// insert field
