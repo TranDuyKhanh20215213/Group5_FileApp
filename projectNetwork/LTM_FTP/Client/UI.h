@@ -1707,6 +1707,7 @@ void check_request(GtkWidget *button, Window *win)
 	{
 
 		// Move to request screen
+		printf("ACCEPT_SUCCESS\n");
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Accept successful!");
 
 		gtk_window_destroy(GTK_WINDOW(win1->window));
@@ -1716,10 +1717,12 @@ void check_request(GtkWidget *button, Window *win)
 	// if userID is invalid
 	else if (result == ID_NOT_FOUND)
 	{
+		printf("ID_NOT_FOUND\n");
 		gtk_window_set_title(GTK_WINDOW(subwindow), "UserID not found!");
 	}
 	else if (result == -1)
 	{
+		printf("ERROR\n");
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Some thing wrong!");
 	}
 

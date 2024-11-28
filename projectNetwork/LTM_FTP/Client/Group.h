@@ -56,7 +56,7 @@ void showGroup(SOCKET sock, char *payload, int option, char *result = NULL)
 			strcat(result, nameGroup);
 			strcat(result, " ");
 		}
-		cout << nameGroup << endl;
+		// cout << nameGroup << endl;
 		nameGroup = strtok_s(payload, DELIMETER, &payload);
 	}
 	free(nameGroup);
