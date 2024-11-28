@@ -74,8 +74,10 @@ int recvMessage(SOCKET client, Message &msg)
 		{
 			cout << " => ERROR : Cannot receive message." << endl;
 		}
+
 		return -1;
 	}
+	printMessage(msg);
 	return ret;
 }
 
