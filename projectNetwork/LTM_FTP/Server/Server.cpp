@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	{
 		createSubFolder(SERVER_FOLDER, listGroup[i].nameGroup);
 		createTempFolder(listGroup[i].nameGroup);
-		createLogFile(listGroup[i].nameGroup);
+		// createLogFile(listGroup[i].nameGroup);
 		createRequestFile(listGroup[i].nameGroup);
 	}
 
