@@ -43,7 +43,7 @@ void loadAccountTxt(vector<Account> &list)
 			list.push_back(acc);
 			count++;
 		}
-		std::cout << " => LOADED " << count << " account(s)" << std::endl;
+		std::cout << " => LOAD account success" << std::endl;
 	}
 	else
 	{
