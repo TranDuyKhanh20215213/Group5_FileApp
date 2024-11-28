@@ -46,6 +46,7 @@ void craftMessage(Message &msg, int type, int offset, int length, char *message)
 		strncpy(msg.payload, message, length);
 		break;
 	}
+	cout << "Send msg: ";
 	printMessage(msg);
 }
 
@@ -77,6 +78,7 @@ int recvMessage(SOCKET client, Message &msg)
 
 		return -1;
 	}
+	cout << "Received msg: ";
 	printMessage(msg);
 	return ret;
 }

@@ -138,10 +138,10 @@ void showListMember(SOCKET sock, char* nameGroup, char *result = NULL) {
 			strcat(result, member);
 			strcat(result, " ");
 		}
-		cout << member << "\t";
+		// cout << member << "\t";
 		member = strtok_s(buff, DELIMETER, &buff);
 	}
-	cout << endl;
+	// cout << endl;
 	free(member);
 }
 
