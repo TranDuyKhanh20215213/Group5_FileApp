@@ -14,7 +14,7 @@ void handleGroupResponse(int msgOpcode)
 		cout << " => SYSTEM : Group has already exist" << endl;
 		break;
 	case ENTER_SUCCESS:
-		cout << " => SYSTEM : Welcome" << endl;
+		cout << " => SYSTEM : ENTER_SUCCESS" << endl;
 		break;
 	case ENTER_FAILED:
 		cout << " => SYSTEM : Enter group failed" << endl;
