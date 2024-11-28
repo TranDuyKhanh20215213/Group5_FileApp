@@ -340,6 +340,16 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					sendMessage(pHD, pID, transferredBytes, ALL);
 					break;
 				case CREATE_FOLDER:
+					char oldPayload[PAYLOAD_SIZE];
+
+					// Copy the old payload to a temporary variable
+					strncpy(oldPayload, msg.payload, PAYLOAD_SIZE);
+
+					// Set the original payload to an empty string
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload);
 					if (createFolder(msg.payload) != -1)
 					{
 						craftMessage(msg, CREATE_FOLDER_SUCCESS, 0, 0, NULL);
@@ -354,6 +364,16 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					}
 					break;
 				case DELETE_FOLDER:
+					char oldPayload2[PAYLOAD_SIZE];
+
+					// Copy the old payload to a temporary variable
+					strncpy(oldPayload2, msg.payload, PAYLOAD_SIZE);
+
+					// Set the original payload to an empty string
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload2);
 					if (removeFolder(msg.payload) != -1)
 					{
 						craftMessage(msg, DELETE_FOLDER_SUCCESS, 0, 0, NULL);
@@ -382,6 +402,16 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					}
 					break;
 				case CHANGE_DIRECTORY:
+					char oldPayload3[PAYLOAD_SIZE];
+
+					// Copy the old payload to a temporary variable
+					strncpy(oldPayload3, msg.payload, PAYLOAD_SIZE);
+
+					// Set the original payload to an empty string
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload3);
 					changeDirectory(msg);
 					memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 					sendMessage(pHD, pID, transferredBytes, ALL);

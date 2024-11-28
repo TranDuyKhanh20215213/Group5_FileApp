@@ -19,10 +19,10 @@ void handleFileResponse(int msgOpcode)
 		cout << " => SYSTEM : Download file successfully" << endl;
 		break;
 	case CREATE_FOLDER_SUCCESS:
-		cout << " => SYSTEM : Create group successfully" << endl;
+		cout << " => SYSTEM : Create folder successfully" << endl;
 		break;
 	case DELETE_FOLDER_SUCCESS:
-		cout << " => SYSTEM : Delete group successfully" << endl;
+		cout << " => SYSTEM : Delete folder successfully" << endl;
 		break;
 	case FOLDER_NOT_FOUND:
 		cout << " => SYSTEM : Folder is not found" << endl;
@@ -169,7 +169,7 @@ int createFolder(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;
 	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
-	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFolder);
+	sprintf(buff, "%s/%s", curDir, nameFolder);
 	// sprintf(buff, "%s/%s", curDir, nameFolder);
 	sendMessage(sock, buff, CREATE_FOLDER);
 	recvMessage(sock, msg);
@@ -182,8 +182,7 @@ int deleteFolder(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;
 	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
-	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFolder);
-	// sprintf(buff, "%s/%s", curDir, nameFolder);
+	sprintf(buff, "%s/%s", curDir, nameFolder);
 	sendMessage(sock, buff, DELETE_FOLDER);
 	recvMessage(sock, msg);
 	handleFileResponse(msg.opcode);
@@ -208,7 +207,7 @@ int changeDirectory(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;
 	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
-	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFolder);
+	sprintf(buff, "%s/%s", curDir, nameFolder);
 	// cout << "Send directory " << buff <<endl;
 	sendMessage(sock, buff, CHANGE_DIRECTORY);
 	recvMessage(sock, msg);
