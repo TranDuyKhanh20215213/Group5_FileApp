@@ -2,94 +2,109 @@
 #include "Resources.h"
 #include "DataIO.h"
 
-
-
-void handleFileResponse(int msgOpcode) {
-	switch (msgOpcode) {
-		case ACCEPT_UPLOAD:
-			cout << " => SYSTEM : File is allow to upload" << endl;
-			break;
-		case UPLOAD_SUCCESS:
-			cout << " => SYSTEM : Upload file successfully" << endl;
-			break;
-		case ACCEPT_DOWNLOAD:
-			cout << " => SYSTEM : File is allow to download" << endl;
-			break;
-		case DOWNLOAD_SUCCESS:
-			cout << " => SYSTEM : Download file successfully" << endl;
-			break;
-		case CREATE_FOLDER_SUCCESS:
-			cout << " => SYSTEM : Create group successfully" << endl;
-			break;
-		case DELETE_FOLDER_SUCCESS:
-			cout << " => SYSTEM : Delete group successfully" << endl;
-			break;
-		case FOLDER_NOT_FOUND:
-			cout << " => SYSTEM : Folder is not found" << endl;
-			break;
-		case FOLDER_ALREADY_EXIST:
-			cout << " => SYSTEM : Folder is already exist" << endl;
-			break;
-		case DELETE_FILE_SUCCESS:
-			cout << " => SYSTEM : Delete file successfully" << endl;
-			break;
-		case FILE_NOT_FOUND:
-			cout << " => SYSTEM : File is not found" << endl;
-			break;
+void handleFileResponse(int msgOpcode)
+{
+	switch (msgOpcode)
+	{
+	case ACCEPT_UPLOAD:
+		cout << " => SYSTEM : File is allow to upload" << endl;
+		break;
+	case UPLOAD_SUCCESS:
+		cout << " => SYSTEM : Upload file successfully" << endl;
+		break;
+	case ACCEPT_DOWNLOAD:
+		cout << " => SYSTEM : File is allow to download" << endl;
+		break;
+	case DOWNLOAD_SUCCESS:
+		cout << " => SYSTEM : Download file successfully" << endl;
+		break;
+	case CREATE_FOLDER_SUCCESS:
+		cout << " => SYSTEM : Create group successfully" << endl;
+		break;
+	case DELETE_FOLDER_SUCCESS:
+		cout << " => SYSTEM : Delete group successfully" << endl;
+		break;
+	case FOLDER_NOT_FOUND:
+		cout << " => SYSTEM : Folder is not found" << endl;
+		break;
+	case FOLDER_ALREADY_EXIST:
+		cout << " => SYSTEM : Folder is already exist" << endl;
+		break;
+	case DELETE_FILE_SUCCESS:
+		cout << " => SYSTEM : Delete file successfully" << endl;
+		break;
+	case FILE_NOT_FOUND:
+		cout << " => SYSTEM : File is not found" << endl;
+		break;
 	}
 }
 
-int upload(SOCKET sock, char* nameGroup, char* nameFile) {
+int upload(SOCKET sock, char *nameGroup, char *nameFile)
+{
 	int ret;
 	Message msg;
-	char* message = (char*)malloc(sizeof(char) * BUFF_SIZE);
-	char* path = (char*)malloc(sizeof(char) * BUFF_SIZE);
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *message = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	char *path = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sprintf(path, "%s/%s", CLIENT_FOLDER, nameFile);
 	// cout << path <<endl;
-	//File exist
-	if (checkFile(path) == 0) {
-		cout << nameGroup <<endl;
+	// File exist
+	if (checkFile(path) == 0)
+	{
+		cout << nameGroup << endl;
 		sprintf(message, "%s/%s", nameGroup, nameFile);
 		ret = sendMessage(sock, message, UPLOAD);
-		if (ret != SOCKET_ERROR) {
+		if (ret != SOCKET_ERROR)
+		{
 			recvMessage(sock, msg);
 			handleFileResponse(msg.opcode);
-			//File is allow to upload
-			if (msg.opcode == ACCEPT_UPLOAD) {
+			// File is allow to upload
+			if (msg.opcode == ACCEPT_UPLOAD)
+			{
 				ret = sendFile(sock, nameFile);
-				if (ret != SOCKET_ERROR) {
+				if (ret != SOCKET_ERROR)
+				{
 					recvMessage(sock, msg);
 					handleFileResponse(msg.opcode);
 					// cout << "Opcode " << msg.opcode << endl;
 					return msg.opcode;
-				} else {
+				}
+				else
+				{
 					cout << "Something wrong" << endl;
 					return -1;
 				}
-			} else {
+			}
+			else
+			{
 				cout << " => Server : Upload file is not accepted" << endl;
 				return -1;
 			}
-		} else {
+		}
+		else
+		{
 			cout << "Something wrong" << endl;
 			return -1;
 		}
-	} else {
+	}
+	else
+	{
 		cout << "File is not exist" << endl;
 		return FILE_NOT_FOUND;
 	}
 	free(message);
 }
 
-int download(SOCKET sock, char* nameGroup, char* nameFile) {
+int download(SOCKET sock, char *nameGroup, char *nameFile)
+{
 	Message msg;
-	char* message = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *message = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sprintf(message, "%s/%s", nameGroup, nameFile);
 	sendMessage(sock, message, DOWNLOAD);
 	recvMessage(sock, msg);
 	handleFileResponse(msg.opcode);
-	if (msg.opcode == ACCEPT_DOWNLOAD) {
+	if (msg.opcode == ACCEPT_DOWNLOAD)
+	{
 		recvFile(sock, nameFile);
 		cout << " => SYSTEM : Download file is completed" << endl;
 		free(message);
@@ -99,33 +114,36 @@ int download(SOCKET sock, char* nameGroup, char* nameFile) {
 	return FILE_NOT_FOUND;
 }
 
-
-void showListFile(SOCKET sock, char* curDir, char *result = NULL) {
+void showListFile(SOCKET sock, char *curDir, char *result = NULL)
+{
 	Message msg;
-	char* file = (char*)malloc(sizeof(char) * 256);
-	char* message = (char*)malloc(sizeof(char) * BUFF_SIZE);
-	
+	char *file = (char *)malloc(sizeof(char) * 256);
+	char *message = (char *)malloc(sizeof(char) * BUFF_SIZE);
+
 	sendMessage(sock, curDir, LIST_FILE);
 	recvMessage(sock, msg);
 	handleFileResponse(msg.opcode);
 	sprintf(file, "");
 	file = strtok_s(msg.payload, DELIMETER, &message);
-	while (file != NULL) {
-		if(result != NULL){
+	while (file != NULL)
+	{
+		if (result != NULL)
+		{
 			strcat(result, file);
 			strcat(result, " ");
 		}
-		cout << file << "\t";
+		// cout << file << "\t";
 		file = strtok_s(message, DELIMETER, &message);
 	}
-	cout << endl;
+	// cout << endl;
 	free(file);
 }
 
-void showListMember(SOCKET sock, char* nameGroup, char *result = NULL) {
+void showListMember(SOCKET sock, char *nameGroup, char *result = NULL)
+{
 	Message msg;
-	char* member = (char*)malloc(sizeof(char) * 256);
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *member = (char *)malloc(sizeof(char) * 256);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 
 	sendMessage(sock, nameGroup, LIST_MEMBER);
 	recvMessage(sock, msg);
@@ -133,8 +151,10 @@ void showListMember(SOCKET sock, char* nameGroup, char *result = NULL) {
 	sprintf(member, "");
 	member = strtok_s(msg.payload, DELIMETER, &buff);
 
-	while (member != NULL) {
-		if(result != NULL){
+	while (member != NULL)
+	{
+		if (result != NULL)
+		{
 			strcat(result, member);
 			strcat(result, " ");
 		}
@@ -145,9 +165,10 @@ void showListMember(SOCKET sock, char* nameGroup, char *result = NULL) {
 	free(member);
 }
 
-int createFolder(SOCKET sock, char* curDir, char* nameFolder) {
+int createFolder(SOCKET sock, char *curDir, char *nameFolder)
+{
 	Message msg;
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFolder);
 	// sprintf(buff, "%s/%s", curDir, nameFolder);
 	sendMessage(sock, buff, CREATE_FOLDER);
@@ -157,9 +178,10 @@ int createFolder(SOCKET sock, char* curDir, char* nameFolder) {
 	return msg.opcode;
 }
 
-int deleteFolder(SOCKET sock, char* curDir, char* nameFolder) {
+int deleteFolder(SOCKET sock, char *curDir, char *nameFolder)
+{
 	Message msg;
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFolder);
 	// sprintf(buff, "%s/%s", curDir, nameFolder);
 	sendMessage(sock, buff, DELETE_FOLDER);
@@ -169,9 +191,10 @@ int deleteFolder(SOCKET sock, char* curDir, char* nameFolder) {
 	return msg.opcode;
 }
 
-int deleteFile(SOCKET sock, char* curDir, char* nameFile) {
+int deleteFile(SOCKET sock, char *curDir, char *nameFile)
+{
 	Message msg;
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFile);
 	// cout<< buff <<endl;
 	sendMessage(sock, buff, DELETE_FILE);
@@ -181,37 +204,43 @@ int deleteFile(SOCKET sock, char* curDir, char* nameFile) {
 	return msg.opcode;
 }
 
-int changeDirectory(SOCKET sock, char* curDir, char* nameFolder) {
+int changeDirectory(SOCKET sock, char *curDir, char *nameFolder)
+{
 	Message msg;
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sprintf(buff, "%s/%s/%s", SERVER_FOLDER, curDir, nameFolder);
 	// cout << "Send directory " << buff <<endl;
 	sendMessage(sock, buff, CHANGE_DIRECTORY);
 	recvMessage(sock, msg);
-	cout<< msg.payload <<endl;
+	cout << msg.payload << endl;
 	handleFileResponse(msg.opcode);
-	if (msg.opcode != FOLDER_NOT_FOUND) {
+	if (msg.opcode != FOLDER_NOT_FOUND)
+	{
 		sprintf(curDir, msg.payload);
-		cout<< "Change folder " << curDir <<" successfully" <<endl;
+		cout << "Change folder " << curDir << " successfully" << endl;
 	}
 	free(buff);
 	return msg.opcode;
 }
 
-void showRequest(SOCKET sock, char* nameGroup, char* result = NULL) {
+void showRequest(SOCKET sock, char *nameGroup, char *result = NULL)
+{
 	Message msg;
-	char* request = (char*)malloc(sizeof(char) * 255);
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
-	char* message = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *request = (char *)malloc(sizeof(char) * 255);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	char *message = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sendMessage(sock, nameGroup, SHOW_REQUEST);
 	recvMessage(sock, msg);
 	sprintf(request, "");
 	request = strtok_s(msg.payload, DELIMETER, &buff);
-	if(result != NULL){
+	if (result != NULL)
+	{
 		strcpy(result, "");
 	}
-	while (request != NULL) {
-		if(isalnum(request[0])){
+	while (request != NULL)
+	{
+		if (isalnum(request[0]))
+		{
 			strcat(result, request);
 			strcat(result, " ");
 		}
@@ -228,11 +257,13 @@ void showRequest(SOCKET sock, char* nameGroup, char* result = NULL) {
 	// }
 }
 
-int acceptRequet(SOCKET sock, char* nameGroup, char* userID){
+int acceptRequet(SOCKET sock, char *nameGroup, char *userID)
+{
 	Message msg;
-	char* request = (char*)malloc(sizeof(char) * 255);
-	char* message = (char*)malloc(sizeof(char) * BUFF_SIZE);
-	if (strlen(userID) != 0) {
+	char *request = (char *)malloc(sizeof(char) * 255);
+	char *message = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	if (strlen(userID) != 0)
+	{
 		sprintf(message, "%s %s", nameGroup, userID);
 		sendMessage(sock, message, ACCEPT_REQUEST);
 		recvMessage(sock, msg);
@@ -241,9 +272,10 @@ int acceptRequet(SOCKET sock, char* nameGroup, char* userID){
 	return -1;
 }
 
-void showLog(SOCKET sock, char* nameGroup) {
+void showLog(SOCKET sock, char *nameGroup)
+{
 	Message msg;
-	char* buff = (char*)malloc(sizeof(char) * BUFF_SIZE);
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sendMessage(sock, nameGroup, SHOW_LOG);
 	recvMessage(sock, msg);
 	cout << msg.payload;
