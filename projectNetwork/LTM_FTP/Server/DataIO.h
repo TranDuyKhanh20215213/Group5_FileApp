@@ -148,6 +148,7 @@ void craftMessage(Message &msg, int opcode, int offset, int length, char *payloa
 	if (length != 0)
 	{
 		memcpy(msg.payload, payload, length);
+		msg.payload[length] = '\0';
 	}
 	else
 	{
