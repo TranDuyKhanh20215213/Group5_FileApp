@@ -38,6 +38,10 @@ void craftMessage(Message &msg, int type, int offset, int length, char *message)
 		{
 			memcpy(msg.payload, message, length);
 		}
+		else
+		{
+			memset(msg.payload, 0, sizeof(msg.payload)); // Xóa toàn bộ bộ nhớ payload
+		}
 		break;
 	default:
 		msg.opcode = type;
