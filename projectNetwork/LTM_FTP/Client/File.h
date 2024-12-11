@@ -1,7 +1,7 @@
 #pragma once
 #include "Resources.h"
 #include "DataIO.h"
-
+#include <iomanip>
 void handleFileResponse(int msgOpcode)
 {
 	switch (msgOpcode)
@@ -165,7 +165,18 @@ void showListMember(SOCKET sock, char *nameGroup, char *result = NULL)
 	// cout << endl;
 	free(member);
 }
-
+int removeMember(SOCKET sock, char *groupName, char *user)
+{
+	Message msg;
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	sprintf(buff, "%s %s", groupName, user);
+	// cout<< buff <<endl;
+	sendMessage(sock, buff, DELETE_MEMBER);
+	recvMessage(sock, msg);
+	handleFileResponse(msg.opcode);
+	free(buff);
+	return msg.opcode;
+}
 int createFolder(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;
@@ -287,9 +298,13 @@ int acceptRequet(SOCKET sock, char *nameGroup, char *userID)
 void showLog(SOCKET sock, char *nameGroup)
 {
 	Message msg;
-	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	string date, time, fileName, uploadedBy;
 	sendMessage(sock, nameGroup, SHOW_LOG);
 	recvMessage(sock, msg);
-	cout << msg.payload;
-	free(buff);
+	cout << left
+		 << setw(16) << "Date"
+		 << setw(16) << "Time"
+		 << setw(40) << "File name"
+		 << "Uploaded by" << endl;
+    cout << msg.payload;
 }
