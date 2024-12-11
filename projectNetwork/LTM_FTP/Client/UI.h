@@ -62,7 +62,7 @@ void change_directory(GtkWidget *b, Window *win);
 void check_directory_change(GtkWidget *b, Window *win);
 void show_request(GtkWidget *b, Window *win);
 void check_request(GtkWidget *b, Window *win);
-
+void show_log(GtkWidget *b, Window *win);
 // initialize
 void initialize(GtkApplication *app, Window *win)
 {
@@ -968,13 +968,13 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
-		// button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 6, 1, 1);
-		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		// // g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -1010,13 +1010,13 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
-		// button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 6, 1, 1);
-		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		// // g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -1740,4 +1740,8 @@ void check_request(GtkWidget *button, Window *win)
 	g_signal_connect(button, "clicked", G_CALLBACK(gtk_widget_show), win1->window);
 
 	gtk_widget_set_visible(subwindow, true);
+}
+void show_log(GtkWidget *b, Window *win)
+{
+	showLog(client, gr.nameGroup);
 }
