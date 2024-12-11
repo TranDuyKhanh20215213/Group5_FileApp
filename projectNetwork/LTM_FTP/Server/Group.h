@@ -44,6 +44,19 @@ int checkGroup(vector<Group> &list, char *nameGroup)
 	return -1;
 }
 
+int getAccount(vector<Account> &list, char *user)
+{
+	int i;
+	for (i = 0; i < list.size(); i++)
+	{
+		if (strcmp(user, list[i].user) == 0)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 void otherGroupToString(vector<Group> list, char *payload)
 {
 	int flag = 1;
@@ -367,6 +380,33 @@ int addMember(Group &gr, char *idMember)
 		return 1;
 	}
 }
+
+void removeMember(Message &msg, vector<Group> &listGroup,vector<Account> &listAccount)
+{
+	char *user = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	char *nameGroup = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	nameGroup = strtok_s(msg.payload, DELIMETER, &user);
+	int j = checkGroup(listGroup, nameGroup);
+	int i = getAccount(listAccount, user);
+	if (j != -1 && i != -1)
+	{
+		if (checkMember(listGroup[j], listAccount[i].id) != -1)
+		{
+			deleteMember(listGroup, listGroup[j], listAccount[i].id);
+			craftMessage(msg, DELETE_MEMBER_SUCCESS, 0, 0, NULL);
+			updateGroupTxt(listGroup);
+		}
+		else
+		{
+			craftMessage(msg, DELETE_MEMBER_FAILED, 0, 0, NULL);
+		}
+	}
+	else
+	{
+		craftMessage(msg, GROUP_NOT_FOUND, 0, 0, NULL);
+	}
+}
+
 
 void acceptRequest(Message &msg, vector<Group> &listGroup, vector<Account> &listAccount)
 {
