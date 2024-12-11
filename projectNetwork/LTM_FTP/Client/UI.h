@@ -63,8 +63,7 @@ void check_directory_change(GtkWidget *b, Window *win);
 void show_request(GtkWidget *b, Window *win);
 void check_request(GtkWidget *b, Window *win);
 void delete_member(GtkWidget *button, Window *win);
-
-
+void show_log(GtkWidget *b, Window *win);
 // initialize
 void initialize(GtkApplication *app, Window *win)
 {
@@ -975,13 +974,13 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
-		// button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 6, 1, 1);
-		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		// // g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -1017,13 +1016,13 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
-		// button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 6, 1, 1);
-		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		// // g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -1836,4 +1835,31 @@ void check_request(GtkWidget *button, Window *win)
 	g_signal_connect(button, "clicked", G_CALLBACK(gtk_widget_show), win1->window);
 
 	gtk_widget_set_visible(subwindow, true);
+}
+void show_log(GtkWidget *b, Window *win)
+{
+    showLog(client, gr.nameGroup);
+
+    GtkWidget *log_window = gtk_application_window_new(win->app);
+    gtk_window_set_title(GTK_WINDOW(log_window), "Log Viewer");
+    gtk_window_set_default_size(GTK_WINDOW(log_window), 320, 120);
+
+    GtkWidget *grid = gtk_grid_new();
+    gtk_window_set_child(GTK_WINDOW(log_window), grid);
+
+    GtkWidget *log_label = gtk_label_new("Logs printed to console.");
+    gtk_grid_attach(GTK_GRID(grid), log_label, 0, 0, 1, 1);
+
+    GtkWidget *back_button = gtk_button_new_with_label("Back to group");
+    gtk_grid_attach(GTK_GRID(grid), back_button, 0, 1, 1, 1);
+
+    // Thêm khoảng cách giữa các widget
+    gtk_widget_set_margin_bottom(log_label, 10);
+    gtk_widget_set_margin_top(back_button, 10);
+
+    // Signal quay trở lại giao diện chính
+    g_signal_connect_swapped(back_button, "clicked", G_CALLBACK(gtk_window_destroy), log_window);
+    g_signal_connect(back_button, "clicked", G_CALLBACK(in_group_page), win);
+
+    gtk_widget_show(log_window); // Hiển thị cửa sổ log
 }

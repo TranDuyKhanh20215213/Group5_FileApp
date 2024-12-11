@@ -1,7 +1,7 @@
 #pragma once
 #include "Resources.h"
 #include "DataIO.h"
-
+#include <iomanip>
 void handleFileResponse(int msgOpcode)
 {
 	switch (msgOpcode)
@@ -285,9 +285,13 @@ int acceptRequet(SOCKET sock, char *nameGroup, char *userID)
 void showLog(SOCKET sock, char *nameGroup)
 {
 	Message msg;
-	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	string date, time, fileName, uploadedBy;
 	sendMessage(sock, nameGroup, SHOW_LOG);
 	recvMessage(sock, msg);
-	cout << msg.payload;
-	free(buff);
+	cout << left
+		 << setw(16) << "Date"
+		 << setw(16) << "Time"
+		 << setw(40) << "File name"
+		 << "Uploaded by" << endl;
+    cout << msg.payload;
 }

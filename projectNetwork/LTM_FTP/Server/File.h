@@ -239,7 +239,7 @@ int recvDataUpload(Message &msg, LPPER_HANDLE_DATA &perHandleData, vector<Accoun
 				break;
 			}
 		}
-		// addToLog(perHandleData->curGroup, perHandleData->nameFile, listAccount[j].user);
+		addToLog(perHandleData->curGroup, perHandleData->nameFile, listAccount[j].user);
 		craftMessage(msg, UPLOAD_SUCCESS, 0, 0, NULL);
 		return 0;
 	}
