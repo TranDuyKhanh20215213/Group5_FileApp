@@ -55,7 +55,6 @@ void delete_file(GtkWidget *b, Window *win);
 void check_file_delete(GtkWidget *b, Window *win);
 void show_member(GtkWidget *b, Window *win);
 void show_file(GtkWidget *b, Window *win);
-void rename_folder_screen(GtkWidget *b, Window *win);
 void create_folder(GtkWidget *b, Window *win);
 void delete_folder(GtkWidget *b, Window *win);
 void check_folder_create(GtkWidget *b, Window *win);
@@ -988,12 +987,12 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow request\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
@@ -1260,7 +1259,6 @@ void delete_file(GtkWidget *button, Window *win)
 	gtk_widget_set_visible(subwindow, true);
 }
 
-
 void move_file(GtkWidget *button, Window *win)
 {
 	Window *win1;
@@ -1297,7 +1295,6 @@ void move_file(GtkWidget *button, Window *win)
 	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->file), "File path\n");
 	gtk_grid_attach(GTK_GRID(subgrid), win1->file, 1, 5, 1, 1);
 
-
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 12, 1, 1);
@@ -1310,8 +1307,6 @@ void move_file(GtkWidget *button, Window *win)
 	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
 }
-
-
 
 void check_file_delete(GtkWidget *button, Window *win)
 {
@@ -1384,7 +1379,8 @@ void check_member_remove(GtkWidget *button, Window *win)
 	else if (result == DELETE_MEMBER_FAILED)
 	{
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Member not found or not in group!");
-	} else
+	}
+	else
 	{
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Some ting wong");
 	}
@@ -1402,7 +1398,6 @@ void check_member_remove(GtkWidget *button, Window *win)
 
 	gtk_widget_set_visible(subwindow, true);
 }
-
 
 void remove_member(GtkWidget *button, Window *win)
 {
@@ -1444,9 +1439,6 @@ void remove_member(GtkWidget *button, Window *win)
 	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
 }
-
-
-
 
 void show_member(GtkWidget *button, Window *win)
 {
@@ -2020,28 +2012,28 @@ void check_request(GtkWidget *button, Window *win)
 }
 void show_log(GtkWidget *b, Window *win)
 {
-    showLog(client, gr.nameGroup);
+	showLog(client, gr.nameGroup);
 
-    GtkWidget *log_window = gtk_application_window_new(win->app);
-    gtk_window_set_title(GTK_WINDOW(log_window), "Log Viewer");
-    gtk_window_set_default_size(GTK_WINDOW(log_window), 320, 120);
+	GtkWidget *log_window = gtk_application_window_new(win->app);
+	gtk_window_set_title(GTK_WINDOW(log_window), "Log Viewer");
+	gtk_window_set_default_size(GTK_WINDOW(log_window), 320, 120);
 
-    GtkWidget *grid = gtk_grid_new();
-    gtk_window_set_child(GTK_WINDOW(log_window), grid);
+	GtkWidget *grid = gtk_grid_new();
+	gtk_window_set_child(GTK_WINDOW(log_window), grid);
 
-    GtkWidget *log_label = gtk_label_new("Logs printed to console.");
-    gtk_grid_attach(GTK_GRID(grid), log_label, 0, 0, 1, 1);
+	GtkWidget *log_label = gtk_label_new("Logs printed to console.");
+	gtk_grid_attach(GTK_GRID(grid), log_label, 0, 0, 1, 1);
 
-    GtkWidget *back_button = gtk_button_new_with_label("Back to group");
-    gtk_grid_attach(GTK_GRID(grid), back_button, 0, 1, 1, 1);
+	GtkWidget *back_button = gtk_button_new_with_label("Back to group");
+	gtk_grid_attach(GTK_GRID(grid), back_button, 0, 1, 1, 1);
 
-    // Thêm khoảng cách giữa các widget
-    gtk_widget_set_margin_bottom(log_label, 10);
-    gtk_widget_set_margin_top(back_button, 10);
+	// Thêm khoảng cách giữa các widget
+	gtk_widget_set_margin_bottom(log_label, 10);
+	gtk_widget_set_margin_top(back_button, 10);
 
-    // Signal quay trở lại giao diện chính
-    g_signal_connect_swapped(back_button, "clicked", G_CALLBACK(gtk_window_destroy), log_window);
-    g_signal_connect(back_button, "clicked", G_CALLBACK(in_group_page), win);
+	// Signal quay trở lại giao diện chính
+	g_signal_connect_swapped(back_button, "clicked", G_CALLBACK(gtk_window_destroy), log_window);
+	g_signal_connect(back_button, "clicked", G_CALLBACK(in_group_page), win);
 
-    gtk_widget_show(log_window); // Hiển thị cửa sổ log
+	gtk_widget_show(log_window); // Hiển thị cửa sổ log
 }
