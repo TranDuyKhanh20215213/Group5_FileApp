@@ -129,8 +129,9 @@ void showListFile(SOCKET sock, char *curDir, char *result = NULL)
 	{
 		if (result != NULL)
 		{
+			strcat(result, "\n");
 			strcat(result, file);
-			strcat(result, " ");
+			strcat(result, "\n");
 		}
 		// cout << file << "\t";
 		file = strtok_s(message, DELIMETER, &message);
@@ -189,6 +190,18 @@ int createFolder(SOCKET sock, char *curDir, char *nameFolder)
 	return msg.opcode;
 }
 
+int renameFolder(SOCKET sock, char *curDir, char *nameFolder, char *rename)
+{
+	Message msg;
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	sprintf(buff, "%s/%s|%s/%s", curDir, nameFolder, curDir, rename);
+	// sprintf(buff, "%s/%s", curDir, nameFolder);
+	sendMessage(sock, buff, RENAME_FOLDER);
+	recvMessage(sock, msg);
+	handleFileResponse(msg.opcode);
+	free(buff);
+	return msg.opcode;
+}
 int deleteFolder(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;

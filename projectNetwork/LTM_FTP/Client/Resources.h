@@ -1,13 +1,13 @@
 #pragma once
 
-//#include "stdafx.h"
+// #include "stdafx.h"
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <iostream>
 #include <direct.h>
-#pragma warning(disable: 4996)
-#pragma comment(lib,"Ws2_32.lib")
+#pragma warning(disable : 4996)
+#pragma comment(lib, "Ws2_32.lib")
 
 using namespace std;
 
@@ -20,33 +20,37 @@ using namespace std;
 #define CLIENT_FOLDER "./ClientData"
 #define SERVER_FOLDER "./ServerData"
 
-typedef struct messsage {
+typedef struct messsage
+{
 	int opcode;
 	int offset;
 	int length;
 	char payload[PAYLOAD_SIZE];
 } Message;
 
-typedef struct Account {
+typedef struct Account
+{
 	char id[6];
 	char user[25];
 	char pass[25];
 	int role;
-}Account;
+} Account;
 
-typedef struct Group {
+typedef struct Group
+{
 	char idGroup[6];
 	char nameGroup[20];
-}Group;
+} Group;
 
-
-enum ACCOUNT_REQUEST {
+enum ACCOUNT_REQUEST
+{
 	LOGIN = 10,
 	REGISTER = 11,
 	LOGOUT = 12,
 };
 
-enum ACCOUNT_RESPONSE {
+enum ACCOUNT_RESPONSE
+{
 	LOGIN_SUCCESS = 100,
 	LOGOUT_SUCCESS = 101,
 
@@ -63,7 +67,8 @@ enum ACCOUNT_RESPONSE {
 
 };
 
-enum GROUP_REQUEST {
+enum GROUP_REQUEST
+{
 	SHOW_MY_GROUP = 20,
 	SHOW_OTHER_GROUP = 21,
 	CREATE_GROUP = 22,
@@ -72,7 +77,8 @@ enum GROUP_REQUEST {
 	LEAVE_GROUP = 25
 };
 
-enum GROUP_RESPONSE {
+enum GROUP_RESPONSE
+{
 	ENTER_SUCCESS = 120,
 	ENTER_FAILED = 121,
 	GROUP_NOT_FOUND = 122,
@@ -90,7 +96,8 @@ enum GROUP_RESPONSE {
 	
 };
 
-enum FILE_REQUEST {
+enum FILE_REQUEST
+{
 	UPLOAD = 30,
 	DOWNLOAD = 31,
 	DATA_UP = 32,
@@ -104,10 +111,13 @@ enum FILE_REQUEST {
 	SHOW_REQUEST = 40,
 	SHOW_LOG = 41,
 	ACCEPT_REQUEST = 42,
+	RENAME_FOLDER = 72,
 	DELETE_MEMBER = 43
+
 };
 
-enum FILE_RESPONSE {
+enum FILE_RESPONSE
+{
 	ACCEPT_UPLOAD = 130,
 	UPLOAD_SUCCESS = 131,
 	ACCEPT_DOWNLOAD = 132,
@@ -120,19 +130,22 @@ enum FILE_RESPONSE {
 	FILE_NOT_FOUND = 139,
 	CHANGE_SUCCESS = 140,
 	FILE_LOG = 141,
-	
+	RENAME_FOLDER_SUCCESS = 172,
 	DELETE_MEMBER_SUCCESS = 142,
 	DELETE_MEMBER_FAILED = 143
+
 };
 
-enum FRAME {
+enum FRAME
+{
 	FIRST_FRAME = 1,
 	SECOND_FRAME = 2,
 	THIRD_FRAME = 3,
 	EXIT = 4
 };
 
-enum ROLE {
+enum ROLE
+{
 	MEMBER = 0,
 	ADMIN = 1,
 };
