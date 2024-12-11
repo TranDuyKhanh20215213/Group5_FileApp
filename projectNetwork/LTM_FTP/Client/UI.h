@@ -62,8 +62,10 @@ void change_directory(GtkWidget *b, Window *win);
 void check_directory_change(GtkWidget *b, Window *win);
 void show_request(GtkWidget *b, Window *win);
 void check_request(GtkWidget *b, Window *win);
-void delete_member(GtkWidget *button, Window *win);
+void remove_member(GtkWidget *button, Window *win);
 void show_log(GtkWidget *b, Window *win);
+void move_file(GtkWidget *button, Window *win);
+
 // initialize
 void initialize(GtkApplication *app, Window *win)
 {
@@ -939,43 +941,48 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nList Member\n\n");
+		button_1 = gtk_button_new_with_label("\t\t\t\nMove file\n\n");
 		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 2, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(move_file), win1);
+
+		button_1 = gtk_button_new_with_label("\t\t\t\nList Member\n\n");
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 2, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_member), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nDelete Member\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 2, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 2, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(remove_member), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nList of file/folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 2, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_file), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nDelete folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_folder), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nMove to folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow request\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
@@ -1242,6 +1249,59 @@ void delete_file(GtkWidget *button, Window *win)
 	gtk_widget_set_visible(subwindow, true);
 }
 
+
+void move_file(GtkWidget *button, Window *win)
+{
+	Window *win1;
+	win1 = win;
+
+	GtkWidget *subgrid;
+	GtkWidget *subwindow;
+	GtkWidget *label, *label_1, *label_2, *button_1;
+	//
+	//
+	subwindow = gtk_application_window_new(win1->app);
+	gtk_window_set_title(GTK_WINDOW(subwindow), "Move File");
+	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 300);
+
+	subgrid = gtk_grid_new();
+	gtk_window_set_child(GTK_WINDOW(subwindow), subgrid);
+
+	// label
+	label = gtk_label_new("Move file");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
+	label_1 = gtk_label_new("\nFile to move: ");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
+
+	// insert field
+	win1->file = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->file), "File path\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->file, 1, 3, 1, 1);
+
+	label_1 = gtk_label_new("\nDestination: ");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 4, 1, 1);
+
+	// insert field
+	win1->file = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->file), "File path\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->file, 1, 5, 1, 1);
+
+
+	// button
+	button = gtk_button_new_with_label("Cancel");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 12, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+
+	button_1 = gtk_button_new_with_label("Delete");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 12, 1, 1);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(check_file_delete), win1);
+	win1->window = subwindow;
+	gtk_widget_set_visible(subwindow, true);
+}
+
+
+
 void check_file_delete(GtkWidget *button, Window *win)
 {
 	Window *win1;
@@ -1313,6 +1373,9 @@ void check_member_remove(GtkWidget *button, Window *win)
 	else if (result == DELETE_MEMBER_FAILED)
 	{
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Member not found or not in group!");
+	} else
+	{
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Some ting wong");
 	}
 
 	grid = gtk_grid_new();

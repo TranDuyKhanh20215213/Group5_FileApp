@@ -340,7 +340,8 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					sendMessage(pHD, pID, transferredBytes, ALL);
 					break;
 				case DELETE_MEMBER:
-					removeMember( msg,listGroup,listAccount);
+					removeMember(msg,listGroup,listAccount);
+					cout << msg.payload;
 					memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 					sendMessage(pHD, pID, transferredBytes, ALL);
 					break;
