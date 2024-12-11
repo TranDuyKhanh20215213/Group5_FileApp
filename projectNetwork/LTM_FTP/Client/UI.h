@@ -1743,5 +1743,28 @@ void check_request(GtkWidget *button, Window *win)
 }
 void show_log(GtkWidget *b, Window *win)
 {
-	showLog(client, gr.nameGroup);
+    showLog(client, gr.nameGroup);
+
+    GtkWidget *log_window = gtk_application_window_new(win->app);
+    gtk_window_set_title(GTK_WINDOW(log_window), "Log Viewer");
+    gtk_window_set_default_size(GTK_WINDOW(log_window), 320, 120);
+
+    GtkWidget *grid = gtk_grid_new();
+    gtk_window_set_child(GTK_WINDOW(log_window), grid);
+
+    GtkWidget *log_label = gtk_label_new("Logs printed to console.");
+    gtk_grid_attach(GTK_GRID(grid), log_label, 0, 0, 1, 1);
+
+    GtkWidget *back_button = gtk_button_new_with_label("Back to group");
+    gtk_grid_attach(GTK_GRID(grid), back_button, 0, 1, 1, 1);
+
+    // Thêm khoảng cách giữa các widget
+    gtk_widget_set_margin_bottom(log_label, 10);
+    gtk_widget_set_margin_top(back_button, 10);
+
+    // Signal quay trở lại giao diện chính
+    g_signal_connect_swapped(back_button, "clicked", G_CALLBACK(gtk_window_destroy), log_window);
+    g_signal_connect(back_button, "clicked", G_CALLBACK(in_group_page), win);
+
+    gtk_widget_show(log_window); // Hiển thị cửa sổ log
 }
