@@ -363,6 +363,36 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 						sendMessage(pHD, pID, transferredBytes, ALL);
 					}
 					break;
+				case RENAME_FOLDER:
+					char oldPayload_rename[PAYLOAD_SIZE]; // Temporary buffer for received payload
+					char *oldPath;						  // Pointer to the first part (curDir/nameFolder)
+					char *newName;						  // Pointer to the second part (rename)
+					char newFullName[PAYLOAD_SIZE];
+					// Copy the original payload to a temporary buffer
+					strncpy(oldPayload_rename, msg.payload, PAYLOAD_SIZE);
+
+					// Split the payload using '|' as the delimiter
+					oldPath = strtok(oldPayload_rename, "|"); // Extract the first part (curDir/nameFolder)
+					newName = strtok(NULL, "|");			  // Extract the second part (rename)
+					printf("%s %s ", oldPath, newName);
+					// Set the original payload to an empty string
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_rename);
+					sprintf(newFullName, "%s/%s", SERVER_FOLDER, newName);
+					if (renameFolder(msg.payload, newFullName) != -1)
+					{
+						craftMessage(msg, RENAME_FOLDER_SUCCESS, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					else
+					{
+						craftMessage(msg, FOLDER_ALREADY_EXIST, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					break;
 				case DELETE_FOLDER:
 					char oldPayload2[PAYLOAD_SIZE];
 

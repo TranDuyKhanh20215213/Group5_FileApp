@@ -2,7 +2,7 @@
 #include "Resources.h"
 #include "DataIO.h"
 #include "Group.h"
-
+#include <stdio.h>
 int getLength(char *file)
 {
 	int length = 0;
@@ -68,6 +68,12 @@ void createRequestFile(char *idGroup)
 int createFolder(const char *nameGroup)
 {
 	int ret = _mkdir(nameGroup);
+	return ret;
+}
+
+int renameFolder(const char *destination, const char *name)
+{
+	int ret = rename(destination, name);
 	return ret;
 }
 
