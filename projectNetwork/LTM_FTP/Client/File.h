@@ -275,7 +275,6 @@ void showLog(SOCKET sock, char *nameGroup)
 {
 	Message msg;
 	string date, time, fileName, uploadedBy;
-	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
 	sendMessage(sock, nameGroup, SHOW_LOG);
 	recvMessage(sock, msg);
 	cout << left
@@ -283,7 +282,5 @@ void showLog(SOCKET sock, char *nameGroup)
 		 << setw(16) << "Time"
 		 << setw(40) << "File name"
 		 << "Uploaded by" << endl;
-    cout << msg.payload << endl;
-
-	free(buff);
+    cout << msg.payload;
 }
