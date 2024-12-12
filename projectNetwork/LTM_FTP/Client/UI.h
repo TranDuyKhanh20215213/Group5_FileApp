@@ -1287,12 +1287,12 @@ void move_file(GtkWidget *button, Window *win)
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
-	label_1 = gtk_label_new("File to be moved: (Full Path)    ");
+	label_1 = gtk_label_new("File to be moved:   ");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
 
 	// insert field
 	win1->folder = gtk_entry_new();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "Full path\n");
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "path\n");
 	gtk_grid_attach(GTK_GRID(subgrid), win1->folder, 1, 2, 1, 1);
 
 	label = gtk_label_new("\n\n");
@@ -1841,7 +1841,7 @@ void check_folder_move(GtkWidget *button, Window *win)
 	strcpy(name, gtk_editable_get_text(GTK_EDITABLE(win1->folder2)));
 
 	// if success:
-	int result = moveFolder(client, folder, name);
+	int result = moveFolder(client, gr.nameGroup, folder, name);
 	if (result == MOVE_FOLDER_SUCCESS)
 	{
 		gtk_init();
@@ -1912,6 +1912,12 @@ void check_folder_rename(GtkWidget *button, Window *win)
 		subwindow = gtk_window_new();
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Folder name exist!");
 	}
+	else if (result == FOLDER_NOT_FOUND)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Folder not found");
+	}
 	else if (result == -1)
 	{
 		gtk_init();
@@ -1947,7 +1953,7 @@ void check_file_move(GtkWidget *button, Window *win)
 	strcpy(name, gtk_editable_get_text(GTK_EDITABLE(win1->folder2)));
 
 	// if success:
-	int result = moveFile(client,gr.nameGroup, folder, name);
+	int result = moveFile(client, gr.nameGroup, folder, name);
 	if (result == MOVE_FILE_SUCCESS)
 	{
 		gtk_init();
