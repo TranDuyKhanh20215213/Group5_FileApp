@@ -213,11 +213,11 @@ int renameFolder(SOCKET sock, char *curDir, char *nameFolder, char *rename)
 	free(buff);
 	return msg.opcode;
 }
-int moveFolder(SOCKET sock, char *nameGroup, char *nameFolder, char *name)
+int moveFolder(SOCKET sock, char *nameFolder, char *name)
 {
 	Message msg;
 	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
-	sprintf(buff, "%s/%s|%s/%s", nameGroup, nameFolder, nameGroup, name);
+	sprintf(buff, "%s|%s", nameFolder, name);
 	// sprintf(buff, "%s/%s", curDir, nameFolder);
 	sendMessage(sock, buff, MOVE_FOLDER);
 	recvMessage(sock, msg);
@@ -226,11 +226,11 @@ int moveFolder(SOCKET sock, char *nameGroup, char *nameFolder, char *name)
 	return msg.opcode;
 }
 
-int moveFile(SOCKET sock, char *nameGroup, char *file, char *destination)
+int moveFile(SOCKET sock,char *nameGroup, char *file, char *destination)
 {
 	Message msg;
 	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
-	sprintf(buff, "%s/%s|%s/%s", nameGroup, file, nameGroup, destination);
+	sprintf(buff, "%s/%s|%s/%s", nameGroup,file, nameGroup,destination);
 	// sprintf(buff, "%s/%s", curDir, nameFolder);
 	sendMessage(sock, buff, MOVE_FILE);
 	recvMessage(sock, msg);

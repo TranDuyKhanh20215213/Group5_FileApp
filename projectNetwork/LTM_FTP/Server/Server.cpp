@@ -18,23 +18,6 @@ LPPER_HANDLE_DATA perHandleData[MAX_MEMBER];
 LPPER_IO_OPERATION_DATA perIoData[MAX_MEMBER];
 
 unsigned __stdcall serverWorkerThread(LPVOID CompletionPortID);
-void splitPath(const char *path, char *parent, char *last)
-{
-	const char *lastSlash = strrchr(path, '/'); // Find the last occurrence of '/'
-
-	if (lastSlash != nullptr)
-	{											// If '/' is found
-		size_t parentLength = lastSlash - path; // Calculate length of parent part
-		strncpy(parent, path, parentLength);	// Copy the parent part
-		parent[parentLength] = '\0';			// Null-terminate the parent string
-		strcpy(last, lastSlash + 1);			// Copy the part after the last '/'
-	}
-	else
-	{
-		strcpy(parent, ""); // If no '/', parent is empty
-		strcpy(last, path); // The whole path is the last element
-	}
-}
 void extractLastSegment(const char *path, char *lastSegment, size_t size)
 {
 	const char *lastSlash = strrchr(path, '/'); // Find the last occurrence of '/'
@@ -413,37 +396,21 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					// Split the payload using '|' as the delimiter
 					oldPath = strtok(oldPayload_rename, "|"); // Extract the first part (curDir/nameFolder)
 					newName = strtok(NULL, "|");			  // Extract the second part (rename)
-					// printf("%s %s ", oldPath, newName);
+					printf("%s %s ", oldPath, newName);
 					// Set the original payload to an empty string
 					memset(msg.payload, 0, PAYLOAD_SIZE);
 					// Construct the new payload
-					char renamed_name[PAYLOAD_SIZE];
-					char renamed_path[PAYLOAD_SIZE];
-					splitPath(oldPath, renamed_path, renamed_name);
-					char renamed_path2[PAYLOAD_SIZE];
-					sprintf(renamed_path2, "%s/%s", SERVER_FOLDER, renamed_path);
 					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_rename);
 					sprintf(newFullName, "%s/%s", SERVER_FOLDER, newName);
-					printf("%s \n", oldPath);
-					printf("%s      %s", renamed_path2, renamed_name);
-					if (checkFolder(renamed_path2, renamed_name) == 0)
+					if (renameFolder(msg.payload, newFullName) != -1)
 					{
-						if (renameFolder(msg.payload, newFullName) != -1)
-						{
-							craftMessage(msg, RENAME_FOLDER_SUCCESS, 0, 0, NULL);
-							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
-							sendMessage(pHD, pID, transferredBytes, ALL);
-						}
-						else
-						{
-							craftMessage(msg, FOLDER_ALREADY_EXIST, 0, 0, NULL);
-							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
-							sendMessage(pHD, pID, transferredBytes, ALL);
-						}
+						craftMessage(msg, RENAME_FOLDER_SUCCESS, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
 					}
 					else
 					{
-						craftMessage(msg, FOLDER_NOT_FOUND, 0, 0, NULL);
+						craftMessage(msg, FOLDER_ALREADY_EXIST, 0, 0, NULL);
 						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 						sendMessage(pHD, pID, transferredBytes, ALL);
 					}
@@ -556,7 +523,7 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					break;
 				case MOVE_FILE:
 					char oldPayload_move3[PAYLOAD_SIZE]; // Temporary buffer for received payload
-					char *oldPath3;						 // Pointer to the first part (curDir/nameFolder)
+					char *oldPath3;						// Pointer to the first part (curDir/nameFolder)
 					char *newName3;
 					char newFullName3[PAYLOAD_SIZE];
 					// Copy the original payload to a temporary buffer
@@ -568,7 +535,7 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					char moved_name3[PAYLOAD_SIZE];
 					extractLastSegment(oldPath3, moved_name3, sizeof(moved_name3));
 					memset(msg.payload, 0, PAYLOAD_SIZE);
-					printf("%s %s ", msg.payload, moved_name3, newFullName3);
+					printf("%s %s ", msg.payload, moved_name3, newFullName3);	
 					// Construct the new payload
 					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_move3);
 					sprintf(newFullName3, "%s/%s/%s", SERVER_FOLDER, newName3, moved_name3);
