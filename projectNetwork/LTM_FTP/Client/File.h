@@ -139,7 +139,18 @@ void showListFile(SOCKET sock, char *curDir, char *result = NULL)
 	// cout << endl;
 	free(file);
 }
-
+int renameFile(SOCKET sock, char *curDir, char *nameFile, char *rename)
+{
+	Message msg;
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	sprintf(buff, "%s/%s|%s/%s", curDir, nameFile, curDir, rename);
+	// sprintf(buff, "%s/%s", curDir, nameFolder);
+	sendMessage(sock, buff, RENAME_FILE);
+	recvMessage(sock, msg);
+	handleFileResponse(msg.opcode);
+	free(buff);
+	return msg.opcode;
+}
 void showListMember(SOCKET sock, char *nameGroup, char *result = NULL)
 {
 	Message msg;

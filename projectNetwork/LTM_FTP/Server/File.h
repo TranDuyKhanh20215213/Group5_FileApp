@@ -133,6 +133,12 @@ int checkFile(char *filePath)
 	return 1;
 }
 
+int renameFile(const char *destination, const char *name)
+{
+	int ret = rename(destination, name);
+	return ret;
+}
+
 int isFolder(char *path)
 {
 	struct stat s;

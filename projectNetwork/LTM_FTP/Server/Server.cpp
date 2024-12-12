@@ -437,6 +437,32 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 						sendMessage(pHD, pID, transferredBytes, ALL);
 					}
 					break;
+				case RENAME_FILE:
+					// Copy the original payload to a temporary buffer
+					strncpy(oldPayload_rename, msg.payload, PAYLOAD_SIZE);
+
+					// Split the payload using '|' as the delimiter
+					oldPath = strtok(oldPayload_rename, "|"); // Extract the first part (curDir/nameFolder)
+					newName = strtok(NULL, "|");			  // Extract the second part (rename)
+					printf("%s %s ", oldPath, newName);
+					// Set the original payload to an empty string
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_rename);
+					sprintf(newFullName, "%s/%s", SERVER_FOLDER, newName);
+					if (renameFile(msg.payload, newFullName) != -1)
+					{
+						craftMessage(msg, RENAME_FILE_SUCCESS, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					else
+					{
+						craftMessage(msg, FILE_ALREADY_EXIST, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					break;
 				case CHANGE_DIRECTORY:
 					char oldPayload3[PAYLOAD_SIZE];
 
