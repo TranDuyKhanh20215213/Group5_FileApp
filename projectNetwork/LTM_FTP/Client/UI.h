@@ -23,6 +23,7 @@ typedef struct Window
 	GtkWidget *folder;	 // folder name
 	GtkWidget *folder2;	 // folder rename
 	GtkWidget *file;	 // file name
+	GtkWidget *file2;	 // file name
 
 } Window;
 
@@ -52,6 +53,7 @@ void check_file_upload(GtkWidget *b, Window *win);
 void download_file(GtkWidget *b, Window *win);
 void check_file_download(GtkWidget *b, Window *win);
 void delete_file(GtkWidget *b, Window *win);
+void check_file_rename(GtkWidget *b, Window *win);
 void check_file_delete(GtkWidget *b, Window *win);
 void show_member(GtkWidget *b, Window *win);
 void show_file(GtkWidget *b, Window *win);
@@ -68,6 +70,7 @@ void show_request(GtkWidget *b, Window *win);
 void check_request(GtkWidget *b, Window *win);
 
 void rename_folder(GtkWidget *b, Window *win);
+void rename_file(GtkWidget *b, Window *win);
 void remove_member(GtkWidget *button, Window *win);
 void show_log(GtkWidget *b, Window *win);
 void move_file(GtkWidget *button, Window *win);
@@ -977,27 +980,32 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_folder), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nRename folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(rename_folder), win1);
 
+		button_1 = gtk_button_new_with_label("\t\t\t\nRename file\n\n");
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(rename_file), win1);
+
 		button_1 = gtk_button_new_with_label("\t\t\t\nMove to folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow request\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 4, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
@@ -1604,6 +1612,58 @@ void rename_folder(GtkWidget *button, Window *win)
 	gtk_widget_set_visible(subwindow, true);
 }
 
+void rename_file(GtkWidget *button, Window *win)
+{
+	Window *win1;
+	win1 = win;
+
+	GtkWidget *subgrid;
+	GtkWidget *subwindow;
+	GtkWidget *label, *label_1, *label_2, *button_1;
+	//
+	// Cua so nhap ten nhom, mo ta nhom
+	//
+	subwindow = gtk_application_window_new(win1->app);
+	gtk_window_set_title(GTK_WINDOW(subwindow), "Rename File");
+	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 500);
+
+	subgrid = gtk_grid_new();
+	gtk_window_set_child(GTK_WINDOW(subwindow), subgrid);
+
+	// label
+	label = gtk_label_new("Rename File");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
+	label = gtk_label_new("\n\n");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
+	label_1 = gtk_label_new("Destination to be renamed:    ");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
+
+	// insert field
+	win1->file = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->file), "Destination name\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->file, 1, 2, 1, 1);
+
+	label = gtk_label_new("\n\n");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 3, 1, 1);
+
+	label_1 = gtk_label_new("Name:    ");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 4, 1, 1);
+	win1->file2 = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->file2), "name\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->file2, 1, 4, 1, 1);
+	// button
+	button = gtk_button_new_with_label("Cancel");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+
+	button_1 = gtk_button_new_with_label("Rename");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(check_file_rename), win1);
+	win1->window = subwindow;
+	gtk_widget_set_visible(subwindow, true);
+}
+
 void delete_folder(GtkWidget *button, Window *win)
 {
 	Window *win1;
@@ -1755,6 +1815,65 @@ void check_folder_rename(GtkWidget *button, Window *win)
 
 	gtk_widget_set_visible(subwindow, true);
 }
+
+void check_file_rename(GtkWidget *button, Window *win)
+{
+	Window *win1;
+	win1 = win;
+
+	GtkWidget *label;
+	GtkWidget *grid;
+	GtkWidget *subwindow;
+	int bytes_sent, bytes_recv;
+	char file[30];
+	char rename[30];
+	strcpy(file, gtk_editable_get_text(GTK_EDITABLE(win1->file)));
+	strcpy(rename, gtk_editable_get_text(GTK_EDITABLE(win1->file2)));
+	if (strlen(file) == 0)
+	{
+		return;
+	}
+
+	if (strlen(rename) == 0)
+	{
+		return;
+	}
+
+	// if success:
+	int result = renameFile(client, curDir, file, rename);
+	if (result == RENAME_FILE_SUCCESS)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Rename file successfully!");
+	}
+	// if group name is invalid
+	else if (result == FILE_ALREADY_EXIST)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "File name exist!");
+	}
+	else if (result == -1)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Some thing wrong!");
+	}
+	grid = gtk_grid_new();
+	gtk_window_set_child(GTK_WINDOW(subwindow), grid);
+
+	label = gtk_label_new("");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
+
+	button = gtk_button_new_with_label("OK");
+	gtk_grid_attach(GTK_GRID(grid), button, 1, 3, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(gtk_widget_show), win1->window);
+
+	gtk_widget_set_visible(subwindow, true);
+}
+
 
 void check_folder_delete(GtkWidget *button, Window *win)
 {
