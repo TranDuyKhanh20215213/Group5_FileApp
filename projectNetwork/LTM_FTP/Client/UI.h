@@ -1515,10 +1515,23 @@ void show_file(GtkWidget *button, Window *win)
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
 
-	button_1 = gtk_button_new_with_label("Rename folder");
-	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 3, 1, 1);
-	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button_1, "clicked", G_CALLBACK(rename_folder), win1);
+	if (acc.role == 1)
+	{
+		button_1 = gtk_button_new_with_label("Rename folder");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(rename_folder), win1);
+
+		button_2 = gtk_button_new_with_label("Move folder");
+		gtk_grid_attach(GTK_GRID(subgrid), button_2, 2, 3, 1, 1);
+		g_signal_connect_swapped(button_2, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_2, "clicked", G_CALLBACK(move_folder), win1);
+
+		button_3 = gtk_button_new_with_label("Move file");
+		gtk_grid_attach(GTK_GRID(subgrid), button_3, 3, 3, 1, 1);
+		g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_3, "clicked", G_CALLBACK(move_file), win1);
+	}
 
 	button_2 = gtk_button_new_with_label("Move folder");
 	gtk_grid_attach(GTK_GRID(subgrid), button_2, 2, 3, 1, 1);
