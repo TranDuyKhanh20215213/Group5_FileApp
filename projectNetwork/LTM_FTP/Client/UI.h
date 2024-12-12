@@ -1962,6 +1962,12 @@ void check_file_rename(GtkWidget *button, Window *win)
 		subwindow = gtk_window_new();
 		gtk_window_set_title(GTK_WINDOW(subwindow), "File name exist!");
 	}
+	else if (result == FILE_NOT_FOUND)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "File not found!");
+	}
 	else if (result == -1)
 	{
 		gtk_init();
