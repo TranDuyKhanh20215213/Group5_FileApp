@@ -18,7 +18,23 @@ LPPER_HANDLE_DATA perHandleData[MAX_MEMBER];
 LPPER_IO_OPERATION_DATA perIoData[MAX_MEMBER];
 
 unsigned __stdcall serverWorkerThread(LPVOID CompletionPortID);
+void extractLastSegment(const char *path, char *lastSegment, size_t size)
+{
+	const char *lastSlash = strrchr(path, '/'); // Find the last occurrence of '/'
 
+	if (lastSlash != nullptr)
+	{
+		// Copy the substring after the last '/'
+		strncpy(lastSegment, lastSlash + 1, size - 1);
+		lastSegment[size - 1] = '\0'; // Ensure null-termination
+	}
+	else
+	{
+		// If no '/' is found, copy the whole string
+		strncpy(lastSegment, path, size - 1);
+		lastSegment[size - 1] = '\0'; // Ensure null-termination
+	}
+}
 int main(int argc, char *argv[])
 {
 
@@ -340,7 +356,7 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					sendMessage(pHD, pID, transferredBytes, ALL);
 					break;
 				case DELETE_MEMBER:
-					removeMember(msg,listGroup,listAccount);
+					removeMember(msg, listGroup, listAccount);
 					cout << msg.payload;
 					memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 					sendMessage(pHD, pID, transferredBytes, ALL);
@@ -395,6 +411,38 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					else
 					{
 						craftMessage(msg, FOLDER_ALREADY_EXIST, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					break;
+
+				case MOVE_FOLDER:
+					char oldPayload_move[PAYLOAD_SIZE]; // Temporary buffer for received payload
+					char *oldPath2;						// Pointer to the first part (curDir/nameFolder)
+					char *newName2;
+					char newFullName2[PAYLOAD_SIZE];
+					// Copy the original payload to a temporary buffer
+					strncpy(oldPayload_move, msg.payload, PAYLOAD_SIZE);
+
+					// Split the payload using '|' as the delimiter
+					oldPath2 = strtok(oldPayload_move, "|"); // Extract the first part (curDir/nameFolder)
+					newName2 = strtok(NULL, "|");
+					char moved_name[PAYLOAD_SIZE];
+					extractLastSegment(oldPath2, moved_name, sizeof(moved_name));
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+					printf("%s %s ", msg.payload, moved_name, newFullName2);
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_move);
+					sprintf(newFullName2, "%s/%s/%s", SERVER_FOLDER, newName2, moved_name);
+					if (renameFolder(msg.payload, newFullName2) != -1)
+					{
+						craftMessage(msg, MOVE_FOLDER_SUCCESS, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					else
+					{
+						craftMessage(msg, MOVE_FOLDER_FAILED, 0, 0, NULL);
 						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 						sendMessage(pHD, pID, transferredBytes, ALL);
 					}

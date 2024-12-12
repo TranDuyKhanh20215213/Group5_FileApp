@@ -213,6 +213,18 @@ int renameFolder(SOCKET sock, char *curDir, char *nameFolder, char *rename)
 	free(buff);
 	return msg.opcode;
 }
+int moveFolder(SOCKET sock, char *nameFolder, char *name)
+{
+	Message msg;
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	sprintf(buff, "%s|%s", nameFolder, name);
+	// sprintf(buff, "%s/%s", curDir, nameFolder);
+	sendMessage(sock, buff, MOVE_FOLDER);
+	recvMessage(sock, msg);
+	handleFileResponse(msg.opcode);
+	free(buff);
+	return msg.opcode;
+}
 int deleteFolder(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;
@@ -317,5 +329,5 @@ void showLog(SOCKET sock, char *nameGroup)
 		 << setw(16) << "Time"
 		 << setw(40) << "File name"
 		 << "Uploaded by" << endl;
-    cout << msg.payload;
+	cout << msg.payload;
 }
