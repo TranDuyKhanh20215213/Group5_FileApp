@@ -511,6 +511,37 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 						sendMessage(pHD, pID, transferredBytes, ALL);
 					}
 					break;
+				case MOVE_FILE:
+					char oldPayload_move3[PAYLOAD_SIZE]; // Temporary buffer for received payload
+					char *oldPath3;						// Pointer to the first part (curDir/nameFolder)
+					char *newName3;
+					char newFullName3[PAYLOAD_SIZE];
+					// Copy the original payload to a temporary buffer
+					strncpy(oldPayload_move3, msg.payload, PAYLOAD_SIZE);
+
+					// Split the payload using '|' as the delimiter
+					oldPath3 = strtok(oldPayload_move3, "|"); // Extract the first part (curDir/nameFolder)
+					newName3 = strtok(NULL, "|");
+					char moved_name3[PAYLOAD_SIZE];
+					extractLastSegment(oldPath3, moved_name3, sizeof(moved_name3));
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+					printf("%s %s ", msg.payload, moved_name3, newFullName3);	
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_move3);
+					sprintf(newFullName3, "%s/%s/%s", SERVER_FOLDER, newName3, moved_name3);
+					if (renameFolder(msg.payload, newFullName3) != -1)
+					{
+						craftMessage(msg, MOVE_FILE_SUCCESS, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					else
+					{
+						craftMessage(msg, MOVE_FILE_FAILED, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+					break;
 				case CHANGE_DIRECTORY:
 					char oldPayload3[PAYLOAD_SIZE];
 

@@ -225,6 +225,19 @@ int moveFolder(SOCKET sock, char *nameFolder, char *name)
 	free(buff);
 	return msg.opcode;
 }
+
+int moveFile(SOCKET sock,char *nameGroup, char *file, char *destination)
+{
+	Message msg;
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	sprintf(buff, "%s/%s|%s/%s", nameGroup,file, nameGroup,destination);
+	// sprintf(buff, "%s/%s", curDir, nameFolder);
+	sendMessage(sock, buff, MOVE_FILE);
+	recvMessage(sock, msg);
+	handleFileResponse(msg.opcode);
+	free(buff);
+	return msg.opcode;
+}
 int deleteFolder(SOCKET sock, char *curDir, char *nameFolder)
 {
 	Message msg;
