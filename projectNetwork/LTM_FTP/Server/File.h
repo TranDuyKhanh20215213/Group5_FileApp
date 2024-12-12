@@ -234,11 +234,13 @@ void addToLog(char *nameGroup, char *nameFile, char *nameMember)
 int recvDataUpload(Message &msg, LPPER_HANDLE_DATA &perHandleData, vector<Account> listAccount)
 {
 	int j;
+	static int totalUploadedBytes = 0;
 	if (msg.length != 0)
 	{
 		int offset = msg.offset * PAYLOAD_SIZE;
 		fseek(perHandleData->f, offset, SEEK_SET);
 		fwrite(msg.payload, 1, msg.length, perHandleData->f);
+		totalUploadedBytes += msg.length;
 		return 1;
 	}
 	else
@@ -252,7 +254,10 @@ int recvDataUpload(Message &msg, LPPER_HANDLE_DATA &perHandleData, vector<Accoun
 			}
 		}
 		addToLog(perHandleData->curGroup, perHandleData->nameFile, listAccount[j].user);
-		craftMessage(msg, UPLOAD_SUCCESS, 0, 0, NULL);
+		char totalBytesStr[20];
+		sprintf(totalBytesStr, "%d", totalUploadedBytes);
+		craftMessage(msg, UPLOAD_SUCCESS, 0, strlen(totalBytesStr) + 1, totalBytesStr);
+		totalUploadedBytes = 0;
 		return 0;
 	}
 }
