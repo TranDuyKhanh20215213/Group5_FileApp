@@ -464,7 +464,7 @@ void show_group(GtkWidget *button, Window *win)
 	subwindow = gtk_application_window_new(win1->app);
 	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Your Group");
-	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
+	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 400);
 
 	subgrid = gtk_grid_new();
 	gtk_window_set_child(GTK_WINDOW(subwindow), subgrid);
