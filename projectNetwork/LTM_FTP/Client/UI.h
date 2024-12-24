@@ -474,25 +474,25 @@ void show_group(GtkWidget *button, Window *win)
 	showGroup(client, acc.id, SHOW_MY_GROUP, groupList);
 	label = gtk_label_new("\t\tGroups you are in: ");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
-	label = gtk_label_new("\n\n");
-	gtk_grid_attach(GTK_GRID(subgrid), label, 2, 1, 1, 1);
+	// label = gtk_label_new("\n\n");
+	// gtk_grid_attach(GTK_GRID(subgrid), label, 2, 1, 1, 1);
 	label = gtk_label_new(groupList);
-	gtk_grid_attach(GTK_GRID(subgrid), label, 3, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(subgrid), label, 2, 1, 1, 1);
 
-	button = gtk_button_new_with_label("OK");
-	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 2, 1, 1);
+	button = gtk_button_new_with_label("Back");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 3, 1, 1);
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(main_page), win1);
 	win1->window = subwindow;
 
 	button = gtk_button_new_with_label("Enter group");
-	gtk_grid_attach(GTK_GRID(subgrid), button, 1, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 2, 1, 1);
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(enter_group), win1);
 	win1->window = subwindow;
 
 	button = gtk_button_new_with_label("Leave group");
-	gtk_grid_attach(GTK_GRID(subgrid), button, 2, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID(subgrid), button, 1, 2, 1, 1);
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(leave_group), win1);
 	win1->window = subwindow;
