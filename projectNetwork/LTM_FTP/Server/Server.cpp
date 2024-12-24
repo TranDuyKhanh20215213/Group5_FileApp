@@ -554,6 +554,36 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					}
 
 					break;
+				case COPY_FILE:
+					char oldPayload_copy[PAYLOAD_SIZE];
+					// Copy the original payload to a temporary buffer
+					strncpy(oldPayload_copy, msg.payload, PAYLOAD_SIZE);
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+					// Construct the new payload
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_copy);
+					if (checkFile(msg.payload) == 0)
+					{
+						if (copyFile(msg.payload) != -1)
+						{
+							craftMessage(msg, COPY_FILE_SUCCESS, 0, 0, NULL);
+							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+							sendMessage(pHD, pID, transferredBytes, ALL);
+						}
+						else
+						{
+							craftMessage(msg, FILE_ALREADY_EXIST, 0, 0, NULL);
+							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+							sendMessage(pHD, pID, transferredBytes, ALL);
+						}
+					}
+					else
+					{
+						craftMessage(msg, FILE_NOT_FOUND, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
+
+					break;
 				case MOVE_FILE:
 					char oldPayload_move3[PAYLOAD_SIZE]; // Temporary buffer for received payload
 					char *oldPath3;						 // Pointer to the first part (curDir/nameFolder)

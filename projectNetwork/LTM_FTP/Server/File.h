@@ -3,6 +3,8 @@
 #include "DataIO.h"
 #include "Group.h"
 #include <stdio.h>
+#include <filesystem>
+#include <iostream>
 int getLength(char *file)
 {
 	int length = 0;
@@ -75,6 +77,43 @@ int renameFolder(const char *destination, const char *name)
 {
 	int ret = rename(destination, name);
 	return ret;
+}
+
+int copyFolder(const char *destination, const char *name)
+{
+	int ret = rename(destination, name);
+	return ret;
+}
+
+int copyFile(const char *source)
+{
+	try
+	{
+		// Convert source to std::string for easier manipulation
+		std::string sourceStr = source;
+		std::string destinationStr = sourceStr;
+
+		// Find the position of the last dot (for the file extension)
+		size_t dotPosition = destinationStr.find_last_of('.');
+		if (dotPosition != std::string::npos)
+		{
+			// Insert "(1)" before the file extension
+			destinationStr.insert(dotPosition, "(1)");
+		}
+		else
+		{
+			// If no extension, append "(1)" to the file name
+			destinationStr += "(1)";
+		}
+
+		// Perform the file copy operation
+		std::filesystem::copy(sourceStr, destinationStr, std::filesystem::copy_options::overwrite_existing);
+		return 1;
+	}
+	catch (const std::filesystem::filesystem_error &e)
+	{
+		return -1;
+	}
 }
 
 void createSubFolder(const char *parent, char *children)
