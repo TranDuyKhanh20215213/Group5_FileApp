@@ -401,9 +401,13 @@ void removeMember(Message &msg, vector<Group> &listGroup,vector<Account> &listAc
 			craftMessage(msg, DELETE_MEMBER_FAILED, 0, 0, NULL);
 		}
 	}
-	else
+	else if (j == -1)
 	{
 		craftMessage(msg, GROUP_NOT_FOUND, 0, 0, NULL);
+	}
+	else if (i == -1)
+	{
+		craftMessage(msg, ID_NOT_FOUND, 0, 0, NULL);
 	}
 }
 

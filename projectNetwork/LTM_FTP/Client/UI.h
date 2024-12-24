@@ -76,6 +76,11 @@ void rename_file(GtkWidget *b, Window *win);
 void remove_member(GtkWidget *button, Window *win);
 void show_log(GtkWidget *b, Window *win);
 void move_file(GtkWidget *button, Window *win);
+void destroy_all_windows();
+void add_window_to_list(GtkWidget *window);
+
+GList *open_windows = NULL;
+
 // initialize
 void initialize(GtkApplication *app, Window *win)
 {
@@ -421,20 +426,20 @@ void main_page(GtkWidget *button, Window *win)
 	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button_1, "clicked", G_CALLBACK(create_group), win1);
 
-	button_1 = gtk_button_new_with_label("\t\t\t\nEnter Group\n\n");
-	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
-	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
+	// button_1 = gtk_button_new_with_label("\t\t\t\nEnter Group\n\n");
+	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 5, 1, 1);
+	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	// g_signal_connect(button_1, "clicked", G_CALLBACK(enter_group), win1);
 
-	button_1 = gtk_button_new_with_label("\t\t\t\nJoin Group\n\n");
-	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 5, 1, 1);
-	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button_1, "clicked", G_CALLBACK(join_group), win1);
+	// button_1 = gtk_button_new_with_label("\t\t\t\nJoin Group\n\n");
+	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 5, 1, 1);
+	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	// g_signal_connect(button_1, "clicked", G_CALLBACK(join_group), win1);
 
-	button_1 = gtk_button_new_with_label("\t\t\t\nLeave Group\n\n");
-	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 5, 1, 1);
-	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button_1, "clicked", G_CALLBACK(leave_group), win1);
+	// button_1 = gtk_button_new_with_label("\t\t\t\nLeave Group\n\n");
+	// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 5, 1, 1);
+	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	// g_signal_connect(button_1, "clicked", G_CALLBACK(leave_group), win1);
 
 	button_1 = gtk_button_new_with_label("\t\t\t\nLog out\n\n");
 	gtk_grid_attach(GTK_GRID(win1->grid), button_1, 6, 5, 1, 1);
@@ -457,6 +462,7 @@ void show_group(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Your Group");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -478,6 +484,18 @@ void show_group(GtkWidget *button, Window *win)
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(main_page), win1);
 	win1->window = subwindow;
+
+	button = gtk_button_new_with_label("Enter group");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 1, 2, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(enter_group), win1);
+	win1->window = subwindow;
+
+	button = gtk_button_new_with_label("Leave group");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 2, 2, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(leave_group), win1);
+	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
 }
 
@@ -493,6 +511,7 @@ void show_other_group(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Your Group");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -513,6 +532,12 @@ void show_other_group(GtkWidget *button, Window *win)
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 2, 1, 1);
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(main_page), win1);
+	win1->window = subwindow;
+	gtk_widget_set_visible(subwindow, true);
+	button = gtk_button_new_with_label("Join group");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 1, 2, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(join_group), win1);
 	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
 }
@@ -570,6 +595,7 @@ void enter_group(GtkWidget *button, Window *win)
 	//
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Enter Group");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -612,6 +638,7 @@ void join_group(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Join Group");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -654,6 +681,7 @@ void leave_group(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Leave Group");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -936,20 +964,20 @@ void in_group_page(GtkWidget *button, Window *win)
 	// if admin role
 	if (acc.role == 1)
 	{
-		button_1 = gtk_button_new_with_label("\t\t\t\nUpload file\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 2, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(upload_file), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nUpload file\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 2, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(upload_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nDowload file\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 2, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(download_file), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nDowload file\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 2, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(download_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nDelete file\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 2, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_file), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nDelete file\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 2, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(delete_file), win1);
 
 		// button_1 = gtk_button_new_with_label("\t\t\t\nMove file\n\n");
 		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 2, 1, 1);
@@ -957,66 +985,66 @@ void in_group_page(GtkWidget *button, Window *win)
 		// g_signal_connect(button_1, "clicked", G_CALLBACK(move_file), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nList Member\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 2, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 2, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_member), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nDelete Member\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 2, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(remove_member), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nDelete Member\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 2, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(remove_member), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nList of file/folder\n\n");
 		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nDelete folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_folder), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nDelete folder\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(delete_folder), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nRename file\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(rename_file), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nRename file\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 4, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(rename_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nMove to folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 3, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nMove to folder\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 5, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow request\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_request), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_log), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nBack\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 3, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(main_page), win1);
 	}
 	else // if member role
 	{
-		button_1 = gtk_button_new_with_label("\t\t\t\nUpload file\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 2, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(upload_file), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nUpload file\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 2, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(upload_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nDowload file\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 2, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(download_file), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nDowload file\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 2, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(download_file), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nList Member\n\n");
 		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 2, 1, 1);
@@ -1028,15 +1056,15 @@ void in_group_page(GtkWidget *button, Window *win)
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(show_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 3, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 0, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\t\nMove to folder\n\n");
-		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
-		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
+		// button_1 = gtk_button_new_with_label("\t\t\t\nMove to folder\n\n");
+		// gtk_grid_attach(GTK_GRID(win1->grid), button_1, 1, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
 		button_1 = gtk_button_new_with_label("\t\t\t\nShow log\n\n");
 		gtk_grid_attach(GTK_GRID(win1->grid), button_1, 2, 3, 1, 1);
@@ -1062,6 +1090,7 @@ void upload_file(GtkWidget *button, Window *win)
 	//
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Upload File");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1082,8 +1111,8 @@ void upload_file(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Upload");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1150,6 +1179,7 @@ void download_file(GtkWidget *button, Window *win)
 	//
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Download File");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1170,8 +1200,8 @@ void download_file(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Download");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1234,6 +1264,7 @@ void delete_file(GtkWidget *button, Window *win)
 	//
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Delete File");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1254,8 +1285,8 @@ void delete_file(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Delete");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1276,6 +1307,7 @@ void move_file(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Move File");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 500);
 
@@ -1306,7 +1338,7 @@ void move_file(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
 	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Move");
@@ -1418,6 +1450,7 @@ void remove_member(GtkWidget *button, Window *win)
 	//
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Delete Member");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1460,6 +1493,7 @@ void show_member(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Show all members");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1482,12 +1516,23 @@ void show_member(GtkWidget *button, Window *win)
 	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
 	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
+	if (acc.role == 1)
+	{
+		button = gtk_button_new_with_label("Delete Member");
+		gtk_grid_attach(GTK_GRID(subgrid), button, 1, 2, 1, 1);
+		g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button, "clicked", G_CALLBACK(remove_member), win1);
+		win1->window = subwindow;
+		gtk_widget_set_visible(subwindow, true);
+	}
 }
 
 void show_file(GtkWidget *button, Window *win)
 {
 	Window *win1;
+	Window *win2;
 	win1 = win;
+	win2 = win;
 
 	GtkWidget *subgrid;
 	GtkWidget *subwindow;
@@ -1496,6 +1541,7 @@ void show_file(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Show all files/folders");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 600, 600);
 
@@ -1511,43 +1557,90 @@ void show_file(GtkWidget *button, Window *win)
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 2, 1, 1);
 
 	button = gtk_button_new_with_label("EXIT");
-	gtk_grid_attach(GTK_GRID(subgrid), button, 1, 4, 1, 1);
+	gtk_grid_attach(GTK_GRID(subgrid), button, 1, 6, 1, 1);
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
 
+	button_1 = gtk_button_new_with_label("Move to folder");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 5, 1, 1);
+	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
+
+	button_1 = gtk_button_new_with_label("Upload file");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 3, 1, 1);
+	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(upload_file), win1);
+
+	button_1 = gtk_button_new_with_label("Dowload file");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 2, 3, 1, 1);
+	// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(download_file), win1);
+
 	if (acc.role == 1)
 	{
-		button_1 = gtk_button_new_with_label("Rename folder");
-		gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 3, 1, 1);
+		button_1 = gtk_button_new_with_label("Delete file");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 3, 3, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_file), win1);
+
+		button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 4, 3, 1, 1);
 		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
+
+		button_1 = gtk_button_new_with_label("\t\t\t\nDelete folder\n\n");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 5, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(delete_folder), win1);
+
+		button_1 = gtk_button_new_with_label("Rename folder");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 4, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(rename_folder), win1);
 
+		button_1 = gtk_button_new_with_label("\t\t\t\nRename file\n\n");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 2, 4, 1, 1);
+		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(rename_file), win1);
+
+		button_1 = gtk_button_new_with_label("Move folder");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 3, 4, 1, 1);
+		// g_signal_connect_swapped(button_2, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(move_folder), win1);
+
+		button_1 = gtk_button_new_with_label("Move file");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 4, 4, 1, 1);
+		// g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(move_file), win1);
+		
+
+		win1->window = subwindow;
+		gtk_widget_set_visible(subwindow, true);
+	}
+	else
+	{
+		button_1 = gtk_button_new_with_label("\t\t\t\nCreate folder\n\n");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 3, 3, 1, 1);
+		g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(create_folder), win1);
+
 		button_2 = gtk_button_new_with_label("Move folder");
-		gtk_grid_attach(GTK_GRID(subgrid), button_2, 2, 3, 1, 1);
-		g_signal_connect_swapped(button_2, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		gtk_grid_attach(GTK_GRID(subgrid), button_2, 1, 4, 1, 1);
+		// g_signal_connect_swapped(button_2, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_2, "clicked", G_CALLBACK(move_folder), win1);
 
 		button_3 = gtk_button_new_with_label("Move file");
-		gtk_grid_attach(GTK_GRID(subgrid), button_3, 3, 3, 1, 1);
-		g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		gtk_grid_attach(GTK_GRID(subgrid), button_3, 2, 4, 1, 1);
+		// g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_3, "clicked", G_CALLBACK(move_file), win1);
+
+		// button_3 = gtk_button_new_with_label("Copy folder");
+		// gtk_grid_attach(GTK_GRID(subgrid), button_3, 3, 3, 1, 1);
+		// g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+		// g_signal_connect(button_3, "clicked", G_CALLBACK(copy_folder), win1);
+		win1->window = subwindow;
+		gtk_widget_set_visible(subwindow, true);
 	}
-
-	button_2 = gtk_button_new_with_label("Move folder");
-	gtk_grid_attach(GTK_GRID(subgrid), button_2, 2, 3, 1, 1);
-	g_signal_connect_swapped(button_2, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button_2, "clicked", G_CALLBACK(move_folder), win1);
-
-	button_3 = gtk_button_new_with_label("Move file");
-	gtk_grid_attach(GTK_GRID(subgrid), button_3, 3, 3, 1, 1);
-	g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button_3, "clicked", G_CALLBACK(move_file), win1);
-	// button_3 = gtk_button_new_with_label("Copy folder");
-	// gtk_grid_attach(GTK_GRID(subgrid), button_3, 3, 3, 1, 1);
-	// g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	// g_signal_connect(button_3, "clicked", G_CALLBACK(copy_folder), win1);
-	win1->window = subwindow;
-	gtk_widget_set_visible(subwindow, true);
 }
 
 void create_folder(GtkWidget *button, Window *win)
@@ -1562,6 +1655,7 @@ void create_folder(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Create Folder");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1582,8 +1676,8 @@ void create_folder(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Create");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1603,11 +1697,19 @@ void move_folder(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Move Folder");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 500);
 
 	subgrid = gtk_grid_new();
 	gtk_window_set_child(GTK_WINDOW(subwindow), subgrid);
+	// group list
+	// char *listFile = (char *)malloc(sizeof(char) * 100);
+	// showListFile(client, curDir, listFile);
+	// label = gtk_label_new("\t\tAll files/folders: \n");
+	// gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
+	// label = gtk_label_new(listFile);
+	// gtk_grid_attach(GTK_GRID(subgrid), label, 0, 2, 1, 1);
 
 	// label
 	label = gtk_label_new("Move Folder");
@@ -1633,7 +1735,7 @@ void move_folder(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
 	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Move");
@@ -1642,6 +1744,7 @@ void move_folder(GtkWidget *button, Window *win)
 	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
 }
+
 void rename_folder(GtkWidget *button, Window *win)
 {
 	Window *win1;
@@ -1654,6 +1757,7 @@ void rename_folder(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Rename Folder");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 500);
 
@@ -1684,8 +1788,8 @@ void rename_folder(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Rename");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1706,6 +1810,7 @@ void rename_file(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Rename File");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 500);
 
@@ -1736,8 +1841,8 @@ void rename_file(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Rename");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1758,6 +1863,7 @@ void delete_folder(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Delete Folder");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -1778,8 +1884,8 @@ void delete_folder(GtkWidget *button, Window *win)
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
-	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
 
 	button_1 = gtk_button_new_with_label("Delete");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
@@ -1860,6 +1966,7 @@ void check_folder_move(GtkWidget *button, Window *win)
 		gtk_init();
 		subwindow = gtk_window_new();
 		gtk_window_set_title(GTK_WINDOW(subwindow), "Move folder successfully!");
+		// g_signal_connect(button, "clicked", G_CALLBACK(gtk_window_destroy), win1->window);
 	}
 	// if group name is invalid
 	else if (result == MOVE_FOLDER_FAILED)
@@ -1883,6 +1990,7 @@ void check_folder_move(GtkWidget *button, Window *win)
 	button = gtk_button_new_with_label("OK");
 	gtk_grid_attach(GTK_GRID(grid), button, 1, 3, 1, 1);
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+
 	g_signal_connect(button, "clicked", G_CALLBACK(gtk_widget_show), win1->window);
 
 	gtk_widget_set_visible(subwindow, true);
@@ -2127,6 +2235,7 @@ void change_directory(GtkWidget *button, Window *win)
 	//
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Change directory");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -2224,6 +2333,7 @@ void show_request(GtkWidget *button, Window *win)
 	// Cua so nhap ten nhom, mo ta nhom
 	//
 	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
 	gtk_window_set_title(GTK_WINDOW(subwindow), "Show request");
 	gtk_window_set_default_size(GTK_WINDOW(subwindow), 320, 200);
 
@@ -2344,4 +2454,23 @@ void show_log(GtkWidget *b, Window *win)
 	g_signal_connect(back_button, "clicked", G_CALLBACK(in_group_page), win);
 
 	gtk_widget_show(log_window); // Hiển thị cửa sổ log
+}
+
+void destroy_all_windows()
+{
+	GList *current = open_windows;
+	for (GList *iter = open_windows; iter != NULL; iter = iter->next)
+	{
+		if (GTK_IS_WINDOW(iter->data))
+		{ // Ensure it's a valid GtkWindow
+			gtk_window_destroy(GTK_WINDOW(iter->data));
+		}
+	}
+	g_list_free(open_windows); // Free the list
+	open_windows = NULL;	   // Reset the list
+}
+
+void add_window_to_list(GtkWidget *window)
+{
+	open_windows = g_list_append(open_windows, window);
 }
