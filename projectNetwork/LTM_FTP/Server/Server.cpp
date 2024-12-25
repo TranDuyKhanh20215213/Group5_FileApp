@@ -556,7 +556,7 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					break;
 				case COPY_FILE:
 					char oldPayload_copy[PAYLOAD_SIZE];
-					char newFullName5[PAYLOAD_SIZE];
+					char newFullName6[PAYLOAD_SIZE];
 					// Copy the original payload to a temporary buffer
 					strncpy(oldPayload_copy, msg.payload, PAYLOAD_SIZE);
 
@@ -567,10 +567,10 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					memset(msg.payload, 0, PAYLOAD_SIZE);
 					// Construct the new payload
 					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_copy);
-					sprintf(newFullName5, "%s/%s", SERVER_FOLDER, newName2);
+					sprintf(newFullName6, "%s/%s", SERVER_FOLDER, newName2);
 					if (checkFile(msg.payload) == 0)
 					{
-						if (copyFile(msg.payload, newFullName5) != -1)
+						if (copyFile(msg.payload, newFullName6) != -1)
 						{
 							craftMessage(msg, COPY_FILE_SUCCESS, 0, 0, NULL);
 							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
@@ -584,6 +584,44 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 						sendMessage(pHD, pID, transferredBytes, ALL);
 					}
 
+					break;
+				case COPY_FOLDER:
+					char oldPayload_rename5[PAYLOAD_SIZE]; // Temporary buffer for received payload
+					char *oldPath5;						   // Pointer to the first part (curDir/nameFolder)
+					char *newName5;						   // Pointer to the second part (rename)
+					char newFullName5[PAYLOAD_SIZE];
+					// Copy the original payload to a temporary buffer
+					strncpy(oldPayload_rename5, msg.payload, PAYLOAD_SIZE);
+
+					// Split the payload using '|' as the delimiter
+					oldPath5 = strtok(oldPayload_rename5, "|"); // Extract the first part (curDir/nameFolder)
+					newName5 = strtok(NULL, "|");				// Extract the second part (rename)
+					// printf("%s %s ", oldPath, newName);
+					// Set the original payload to an empty string
+					memset(msg.payload, 0, PAYLOAD_SIZE);
+					// Construct the new payload
+					char renamed_name5[PAYLOAD_SIZE];
+					char renamed_path5[PAYLOAD_SIZE];
+					splitPath(oldPath5, renamed_path5, renamed_name5);
+					char renamed_path52[PAYLOAD_SIZE];
+					sprintf(renamed_path52, "%s/%s", SERVER_FOLDER, renamed_path5);
+					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_rename5);
+					sprintf(newFullName5, "%s/%s", SERVER_FOLDER, newName5);
+					if (checkFolder(renamed_path52, renamed_name5) == 0)
+					{
+						if (copyFolder(msg.payload, newFullName5) != -1)
+						{
+							craftMessage(msg, COPY_FOLDER_SUCCESS, 0, 0, NULL);
+							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+							sendMessage(pHD, pID, transferredBytes, ALL);
+						}
+					}
+					else
+					{
+						craftMessage(msg, FOLDER_NOT_FOUND, 0, 0, NULL);
+						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
+						sendMessage(pHD, pID, transferredBytes, ALL);
+					}
 					break;
 				case MOVE_FILE:
 					char oldPayload_move3[PAYLOAD_SIZE]; // Temporary buffer for received payload

@@ -79,12 +79,6 @@ int renameFolder(const char *destination, const char *name)
 	return ret;
 }
 
-int copyFolder(const char *destination, const char *name)
-{
-	int ret = rename(destination, name);
-	return ret;
-}
-
 int copyFile(const char *source, const char *name)
 {
 	try
@@ -133,6 +127,44 @@ int copyFile(const char *source, const char *name)
 	catch (const std::filesystem::filesystem_error &e)
 	{
 		return -1;
+	}
+}
+
+int copyFolder(const char *source, const char *destinationBase)
+{
+	try
+	{
+		// Convert input paths to std::string for easier manipulation
+		std::string sourceStr = source;
+		std::string destinationBaseStr = destinationBase;
+
+		// Ensure the destination base path ends with a slash
+		if (!destinationBaseStr.empty() && destinationBaseStr.back() != '/' && destinationBaseStr.back() != '\\')
+		{
+			destinationBaseStr += '/';
+		}
+
+		// Extract the folder name from the source path
+		std::string folderName = std::filesystem::path(sourceStr).filename().string();
+		std::string destination = destinationBaseStr + folderName;
+
+		// Check if the destination folder already exists
+		int counter = 1;
+		while (std::filesystem::exists(destination))
+		{
+			destination = destinationBaseStr + folderName + "_" + std::to_string(counter);
+			counter++;
+		}
+
+		// Perform the folder copy operation
+		std::filesystem::copy(sourceStr, destination,
+							  std::filesystem::copy_options::recursive);
+
+		return 1; // Success
+	}
+	catch (const std::filesystem::filesystem_error &e)
+	{
+		return -1; // Failure
 	}
 }
 
