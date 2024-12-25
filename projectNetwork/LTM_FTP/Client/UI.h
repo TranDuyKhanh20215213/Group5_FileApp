@@ -1562,8 +1562,8 @@ void show_file(GtkWidget *button, Window *win)
 	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button, "clicked", G_CALLBACK(in_group_page), win1);
 
-	button_1 = gtk_button_new_with_label("Move to folder");
-	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 5, 1, 1);
+	button_1 = gtk_button_new_with_label("Enter folder");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 3, 5, 1, 1);
 	g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 	g_signal_connect(button_1, "clicked", G_CALLBACK(change_directory), win1);
 
@@ -1614,13 +1614,13 @@ void show_file(GtkWidget *button, Window *win)
 		// g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(move_file), win1);
 
-		button_1 = gtk_button_new_with_label("Copy file");
-		gtk_grid_attach(GTK_GRID(subgrid), button_1, 5, 4, 1, 1);
+		button_1 = gtk_button_new_with_label("\t\t\tCopy file\n\n");
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 5, 1, 1);
 		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(copy_file), win1);
 
 		button_1 = gtk_button_new_with_label("Copy folder");
-		gtk_grid_attach(GTK_GRID(subgrid), button_1, 6, 4, 1, 1);
+		gtk_grid_attach(GTK_GRID(subgrid), button_1, 2, 5, 1, 1);
 		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(copy_file), win1);
 
@@ -1831,17 +1831,22 @@ void copy_file(GtkWidget *button, Window *win)
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
-	label_1 = gtk_label_new("Source to be copy:    ");
+	label_1 = gtk_label_new("Source file name");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
 
 	// insert field
 	win1->folder = gtk_entry_new();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "Source name\n");
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "name\n");
 	gtk_grid_attach(GTK_GRID(subgrid), win1->folder, 1, 2, 1, 1);
 
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 3, 1, 1);
 
+	label_1 = gtk_label_new("Destination Name:    ");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 4, 1, 1);
+	win1->folder2 = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder2), "destination name\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->folder2, 1, 4, 1, 1);
 	// button
 	button = gtk_button_new_with_label("Cancel");
 	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
@@ -2125,14 +2130,16 @@ void check_file_copy(GtkWidget *button, Window *win)
 	GtkWidget *subwindow;
 	int bytes_sent, bytes_recv;
 	char source[50];
+	char copy[50];
 	strcpy(source, gtk_editable_get_text(GTK_EDITABLE(win1->folder)));
+	strcpy(copy, gtk_editable_get_text(GTK_EDITABLE(win1->folder2)));
 	if (strlen(source) == 0)
 	{
 		return;
 	}
 
 	// if success:
-	int result = copyFile(client, curDir, source);
+	int result = copyFile(client, curDir, source, copy);
 	if (result == COPY_FILE_SUCCESS)
 	{
 		gtk_init();
