@@ -2674,19 +2674,18 @@ void show_log(GtkWidget *b, Window *win)
 	gtk_widget_show(log_window); // Hiển thị cửa sổ log
 }
 
-void destroy_all_windows()
-{
-	GList *current = open_windows;
-	for (GList *iter = open_windows; iter != NULL; iter = iter->next)
-	{
-		if (GTK_IS_WINDOW(iter->data))
-		{ // Ensure it's a valid GtkWindow
-			gtk_window_destroy(GTK_WINDOW(iter->data));
-		}
-	}
-	g_list_free(open_windows); // Free the list
-	open_windows = NULL;	   // Reset the list
+void destroy_all_windows() {
+    GList *current = g_list_copy(open_windows);
+    for (GList *iter = current; iter != NULL; iter = iter->next) {
+        if (GTK_IS_WINDOW(iter->data)) {
+            gtk_window_destroy(GTK_WINDOW(iter->data));
+        }
+    }
+    g_list_free(current);     // Free the copied list
+    g_list_free(open_windows); // Free the original list
+    open_windows = NULL;      // Reset the list
 }
+
 
 void add_window_to_list(GtkWidget *window)
 {
