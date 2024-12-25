@@ -270,6 +270,16 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 			else
 			{
 				msg = getMessage(pID->buffer);
+				if (pID->operation == RECEIVE)
+				{
+					cout << "Received msg: ";
+					printMessage(msg);
+				}
+				else
+				{
+					cout << "Send msg: ";
+					printMessage(msg);
+				}
 
 				switch (msg.opcode)
 				{
@@ -697,6 +707,16 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 			else
 			{
 				msg = getMessage(pID->buffer);
+				if (pID->operation == RECEIVE)
+				{
+					cout << "Received msg: ";
+					printMessage(msg);
+				}
+				else
+				{
+					cout << "Send msg: ";
+					printMessage(msg);
+				}
 				EnterCriticalSection(&cs);
 				if (msg.opcode == ACCEPT_DOWNLOAD)
 				{

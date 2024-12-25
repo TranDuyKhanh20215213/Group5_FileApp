@@ -154,7 +154,6 @@ void craftMessage(Message &msg, int opcode, int offset, int length, char *payloa
 	{
 		memcpy(msg.payload, "", 1);
 	}
-	printMessage(msg);
 }
 
 void sendMessage(LPPER_HANDLE_DATA &pHD, LPPER_IO_OPERATION_DATA &pID, DWORD &transferredBytes, int status)
@@ -269,9 +268,6 @@ Message getMessage(char *pID_buffer)
 	else if (msg.length < PAYLOAD_SIZE)
 	{
 		msg.payload[msg.length] = 0;
-	}
-	else
-	{
 	}
 	return msg;
 }
