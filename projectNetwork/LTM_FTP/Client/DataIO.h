@@ -153,6 +153,8 @@ int recvFile(SOCKET client, char *fileName)
 		ret = recv(client, (char *)&msg, MESSAGE_SIZE, 0);
 		if (ret > 0)
 		{
+			cout << "Received msg: ";
+	        printMessage(msg);
 			if (msg.opcode == DATA_DOWN)
 			{
 				offset = msg.offset * PAYLOAD_SIZE;
