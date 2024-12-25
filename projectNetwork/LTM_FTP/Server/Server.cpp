@@ -556,22 +556,23 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 					break;
 				case COPY_FILE:
 					char oldPayload_copy[PAYLOAD_SIZE];
+					char newFullName5[PAYLOAD_SIZE];
 					// Copy the original payload to a temporary buffer
 					strncpy(oldPayload_copy, msg.payload, PAYLOAD_SIZE);
+
+					// Split the payload using '|' as the delimiter
+					oldPath2 = strtok(oldPayload_copy, "|"); // Extract the first part (curDir/nameFolder)
+					newName2 = strtok(NULL, "|");
+					// Set the original payload to an empty string
 					memset(msg.payload, 0, PAYLOAD_SIZE);
 					// Construct the new payload
 					sprintf(msg.payload, "%s/%s", SERVER_FOLDER, oldPayload_copy);
+					sprintf(newFullName5, "%s/%s", SERVER_FOLDER, newName2);
 					if (checkFile(msg.payload) == 0)
 					{
-						if (copyFile(msg.payload) != -1)
+						if (copyFile(msg.payload, newFullName5) != -1)
 						{
 							craftMessage(msg, COPY_FILE_SUCCESS, 0, 0, NULL);
-							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
-							sendMessage(pHD, pID, transferredBytes, ALL);
-						}
-						else
-						{
-							craftMessage(msg, FILE_ALREADY_EXIST, 0, 0, NULL);
 							memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 							sendMessage(pHD, pID, transferredBytes, ALL);
 						}

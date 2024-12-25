@@ -85,29 +85,49 @@ int copyFolder(const char *destination, const char *name)
 	return ret;
 }
 
-int copyFile(const char *source)
+int copyFile(const char *source, const char *name)
 {
 	try
 	{
-		// Convert source to std::string for easier manipulation
+		// Convert source and name to std::string for easier manipulation
 		std::string sourceStr = source;
-		std::string destinationStr = sourceStr;
+		std::string folderStr = name;
 
-		// Find the position of the last dot (for the file extension)
-		size_t dotPosition = destinationStr.find_last_of('.');
-		if (dotPosition != std::string::npos)
+		// Ensure the folder path ends with a slash
+		if (!folderStr.empty() && folderStr.back() != '/' && folderStr.back() != '\\')
 		{
-			// Insert "(1)" before the file extension
-			destinationStr.insert(dotPosition, "(1)");
+			folderStr += '/';
 		}
-		else
+
+		// Extract the filename from the source path
+		std::string filename = std::filesystem::path(sourceStr).filename().string();
+		std::string destination = folderStr + filename;
+
+		// Check if the file already exists in the destination folder
+		int counter = 1;
+		while (std::filesystem::exists(destination))
 		{
-			// If no extension, append "(1)" to the file name
-			destinationStr += "(1)";
+			// Find the position of the last dot (for the file extension)
+			size_t dotPosition = filename.find_last_of('.');
+
+			if (dotPosition != std::string::npos)
+			{
+				// If the file has an extension, insert the counter before the extension
+				std::string base = filename.substr(0, dotPosition);
+				std::string extension = filename.substr(dotPosition);
+				destination = folderStr + base + "(" + std::to_string(counter) + ")" + extension;
+			}
+			else
+			{
+				// If the file has no extension, append the counter to the filename
+				destination = folderStr + filename + "(" + std::to_string(counter) + ")";
+			}
+
+			counter++;
 		}
 
 		// Perform the file copy operation
-		std::filesystem::copy(sourceStr, destinationStr, std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy(sourceStr, destination, std::filesystem::copy_options::overwrite_existing);
 		return 1;
 	}
 	catch (const std::filesystem::filesystem_error &e)
