@@ -705,6 +705,10 @@ unsigned __stdcall serverWorkerThread(LPVOID completionPortID)
 						memcpy(pID->buffer, &msg, MESSAGE_SIZE);
 						sendMessage(pHD, pID, transferredBytes, ALL);
 						perHandleData[i]->nLeft -= size;
+						if (perHandleData[i]->nLeft == 0)
+						{
+							fclose(perHandleData[i]->f);
+						}
 					}
 					else
 					{
