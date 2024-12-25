@@ -225,6 +225,19 @@ int copyFile(SOCKET sock, char *curDir, char *source, char *copy)
 	free(buff);
 	return msg.opcode;
 }
+
+int copyFolder(SOCKET sock, char *curDir, char *source, char *copy)
+{
+	Message msg;
+	char *buff = (char *)malloc(sizeof(char) * BUFF_SIZE);
+	sprintf(buff, "%s/%s|%s/%s", curDir, source, curDir, copy);
+	// sprintf(buff, "%s/%s", curDir, nameFolder);
+	sendMessage(sock, buff, COPY_FOLDER);
+	recvMessage(sock, msg);
+	handleFileResponse(msg.opcode);
+	free(buff);
+	return msg.opcode;
+}
 int moveFolder(SOCKET sock, char *nameGroup, char *nameFolder, char *name)
 {
 	Message msg;

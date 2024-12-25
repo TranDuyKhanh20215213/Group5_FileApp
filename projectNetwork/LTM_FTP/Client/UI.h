@@ -63,6 +63,7 @@ void delete_folder(GtkWidget *b, Window *win);
 void check_folder_create(GtkWidget *b, Window *win);
 void check_folder_rename(GtkWidget *b, Window *win);
 void check_file_copy(GtkWidget *b, Window *win);
+void check_folder_copy(GtkWidget *b, Window *win);
 void check_folder_move(GtkWidget *b, Window *win);
 void check_folder_delete(GtkWidget *b, Window *win);
 void change_directory(GtkWidget *b, Window *win);
@@ -72,6 +73,7 @@ void check_request(GtkWidget *b, Window *win);
 
 void rename_folder(GtkWidget *b, Window *win);
 void copy_file(GtkWidget *b, Window *win);
+void copy_folder(GtkWidget *b, Window *win);
 void move_folder(GtkWidget *b, Window *win);
 void rename_file(GtkWidget *b, Window *win);
 void remove_member(GtkWidget *button, Window *win);
@@ -1622,7 +1624,7 @@ void show_file(GtkWidget *button, Window *win)
 		button_1 = gtk_button_new_with_label("Copy folder");
 		gtk_grid_attach(GTK_GRID(subgrid), button_1, 2, 5, 1, 1);
 		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
-		g_signal_connect(button_1, "clicked", G_CALLBACK(copy_file), win1);
+		g_signal_connect(button_1, "clicked", G_CALLBACK(copy_folder), win1);
 
 		win1->window = subwindow;
 		gtk_widget_set_visible(subwindow, true);
@@ -1856,6 +1858,59 @@ void copy_file(GtkWidget *button, Window *win)
 	button_1 = gtk_button_new_with_label("Copy");
 	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
 	g_signal_connect(button_1, "clicked", G_CALLBACK(check_file_copy), win1);
+	win1->window = subwindow;
+	gtk_widget_set_visible(subwindow, true);
+}
+
+void copy_folder(GtkWidget *button, Window *win)
+{
+	Window *win1;
+	win1 = win;
+
+	GtkWidget *subgrid;
+	GtkWidget *subwindow;
+	GtkWidget *label, *label_1, *label_2, *button_1;
+	//
+	// Cua so nhap ten nhom, mo ta nhom
+	//
+	subwindow = gtk_application_window_new(win1->app);
+	add_window_to_list(subwindow);
+	gtk_window_set_title(GTK_WINDOW(subwindow), "Copy folder");
+	gtk_window_set_default_size(GTK_WINDOW(subwindow), 500, 500);
+
+	subgrid = gtk_grid_new();
+	gtk_window_set_child(GTK_WINDOW(subwindow), subgrid);
+
+	// label
+	label = gtk_label_new("Copy folder");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
+	label = gtk_label_new("\n\n");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
+	label_1 = gtk_label_new("Source file name");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
+
+	// insert field
+	win1->folder = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "name\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->folder, 1, 2, 1, 1);
+
+	label = gtk_label_new("\n\n");
+	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 3, 1, 1);
+
+	label_1 = gtk_label_new("Destination Name:    ");
+	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 4, 1, 1);
+	win1->folder2 = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder2), "destination name\n");
+	gtk_grid_attach(GTK_GRID(subgrid), win1->folder2, 1, 4, 1, 1);
+	// button
+	button = gtk_button_new_with_label("Cancel");
+	gtk_grid_attach(GTK_GRID(subgrid), button, 0, 8, 1, 1);
+	g_signal_connect(button, "clicked", G_CALLBACK(destroy_all_windows), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(show_file), win1);
+
+	button_1 = gtk_button_new_with_label("Copy");
+	gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 8, 1, 1);
+	g_signal_connect(button_1, "clicked", G_CALLBACK(check_folder_copy), win1);
 	win1->window = subwindow;
 	gtk_widget_set_visible(subwindow, true);
 }
@@ -2144,14 +2199,64 @@ void check_file_copy(GtkWidget *button, Window *win)
 	{
 		gtk_init();
 		subwindow = gtk_window_new();
-		gtk_window_set_title(GTK_WINDOW(subwindow), "Rename folder successfully!");
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Copy file successfully!");
 	}
-	// if group name is invalid
-	else if (result == FILE_ALREADY_EXIST)
+	else if (result == FILE_NOT_FOUND)
 	{
 		gtk_init();
 		subwindow = gtk_window_new();
-		gtk_window_set_title(GTK_WINDOW(subwindow), "Folder name exist!");
+		gtk_window_set_title(GTK_WINDOW(subwindow), "File not found!");
+	}
+	else if (result == -1)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Some thing wrong!");
+	}
+	grid = gtk_grid_new();
+	gtk_window_set_child(GTK_WINDOW(subwindow), grid);
+
+	label = gtk_label_new("");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
+
+	button = gtk_button_new_with_label("OK");
+	gtk_grid_attach(GTK_GRID(grid), button, 1, 3, 1, 1);
+	g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
+	g_signal_connect(button, "clicked", G_CALLBACK(gtk_widget_show), win1->window);
+
+	gtk_widget_set_visible(subwindow, true);
+}
+void check_folder_copy(GtkWidget *button, Window *win)
+{
+	Window *win1;
+	win1 = win;
+
+	GtkWidget *label;
+	GtkWidget *grid;
+	GtkWidget *subwindow;
+	int bytes_sent, bytes_recv;
+	char source[50];
+	char copy[50];
+	strcpy(source, gtk_editable_get_text(GTK_EDITABLE(win1->folder)));
+	strcpy(copy, gtk_editable_get_text(GTK_EDITABLE(win1->folder2)));
+	if (strlen(source) == 0)
+	{
+		return;
+	}
+
+	// if success:
+	int result = copyFolder(client, curDir, source, copy);
+	if (result == COPY_FOLDER_SUCCESS)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Copy folder successfully!");
+	}
+	else if (result == FOLDER_NOT_FOUND)
+	{
+		gtk_init();
+		subwindow = gtk_window_new();
+		gtk_window_set_title(GTK_WINDOW(subwindow), "Folder not found!");
 	}
 	else if (result == -1)
 	{
