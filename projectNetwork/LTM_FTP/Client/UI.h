@@ -1327,7 +1327,7 @@ void move_file(GtkWidget *button, Window *win)
 
 	// insert field
 	win1->folder = gtk_entry_new();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "path\n");
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "name\n");
 	gtk_grid_attach(GTK_GRID(subgrid), win1->folder, 1, 2, 1, 1);
 
 	label = gtk_label_new("\n\n");
@@ -1616,7 +1616,7 @@ void show_file(GtkWidget *button, Window *win)
 		// g_signal_connect_swapped(button_3, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(move_file), win1);
 
-		button_1 = gtk_button_new_with_label("\t\t\tCopy file\n\n");
+		button_1 = gtk_button_new_with_label("\t\t\t\nCopy file\n\n");
 		gtk_grid_attach(GTK_GRID(subgrid), button_1, 1, 5, 1, 1);
 		// g_signal_connect_swapped(button_1, "clicked", G_CALLBACK(gtk_window_destroy), subwindow);
 		g_signal_connect(button_1, "clicked", G_CALLBACK(copy_file), win1);
@@ -1728,18 +1728,18 @@ void move_folder(GtkWidget *button, Window *win)
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
-	label_1 = gtk_label_new("Destination to be moved: (Full Path)    ");
+	label_1 = gtk_label_new("  Source folder  ");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
 
 	// insert field
 	win1->folder = gtk_entry_new();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "Full path\n");
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "name\n");
 	gtk_grid_attach(GTK_GRID(subgrid), win1->folder, 1, 2, 1, 1);
 
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 3, 1, 1);
 
-	label_1 = gtk_label_new("Destination Name:    ");
+	label_1 = gtk_label_new("  Destination Name:    ");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 4, 1, 1);
 	win1->folder2 = gtk_entry_new();
 	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder2), "name\n");
@@ -1781,18 +1781,18 @@ void rename_folder(GtkWidget *button, Window *win)
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 0, 1, 1);
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 1, 1, 1);
-	label_1 = gtk_label_new("Destination to be renamed:    ");
+	label_1 = gtk_label_new("source name:    ");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 2, 1, 1);
 
 	// insert field
 	win1->folder = gtk_entry_new();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "Destination name\n");
+	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder), "name\n");
 	gtk_grid_attach(GTK_GRID(subgrid), win1->folder, 1, 2, 1, 1);
 
 	label = gtk_label_new("\n\n");
 	gtk_grid_attach(GTK_GRID(subgrid), label, 0, 3, 1, 1);
 
-	label_1 = gtk_label_new("Name:    ");
+	label_1 = gtk_label_new("Destination Name:    ");
 	gtk_grid_attach(GTK_GRID(subgrid), label_1, 0, 4, 1, 1);
 	win1->folder2 = gtk_entry_new();
 	gtk_entry_set_placeholder_text(GTK_ENTRY(win1->folder2), "name\n");
@@ -2674,18 +2674,20 @@ void show_log(GtkWidget *b, Window *win)
 	gtk_widget_show(log_window); // Hiển thị cửa sổ log
 }
 
-void destroy_all_windows() {
-    GList *current = g_list_copy(open_windows);
-    for (GList *iter = current; iter != NULL; iter = iter->next) {
-        if (GTK_IS_WINDOW(iter->data)) {
-            gtk_window_destroy(GTK_WINDOW(iter->data));
-        }
-    }
-    g_list_free(current);     // Free the copied list
-    g_list_free(open_windows); // Free the original list
-    open_windows = NULL;      // Reset the list
+void destroy_all_windows()
+{
+	GList *current = g_list_copy(open_windows);
+	for (GList *iter = current; iter != NULL; iter = iter->next)
+	{
+		if (GTK_IS_WINDOW(iter->data))
+		{
+			gtk_window_destroy(GTK_WINDOW(iter->data));
+		}
+	}
+	g_list_free(current);	   // Free the copied list
+	g_list_free(open_windows); // Free the original list
+	open_windows = NULL;	   // Reset the list
 }
-
 
 void add_window_to_list(GtkWidget *window)
 {
