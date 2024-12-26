@@ -2676,19 +2676,15 @@ void show_log(GtkWidget *b, Window *win)
 
 void destroy_all_windows()
 {
-	GList *current = g_list_copy(open_windows);
-	for (GList *iter = current; iter != NULL; iter = iter->next)
-	{
-		if (GTK_IS_WINDOW(iter->data))
-		{
-			gtk_window_destroy(GTK_WINDOW(iter->data));
-		}
-	}
-	g_list_free(current);	   // Free the copied list
-	g_list_free(open_windows); // Free the original list
-	open_windows = NULL;	   // Reset the list
+    while (open_windows != NULL)
+    {
+        if (GTK_IS_WINDOW(open_windows->data))
+        {
+            gtk_window_destroy(GTK_WINDOW(open_windows->data));
+        }
+        open_windows = g_list_delete_link(open_windows, open_windows);
+    }
 }
-
 void add_window_to_list(GtkWidget *window)
 {
 	open_windows = g_list_append(open_windows, window);
